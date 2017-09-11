@@ -19,7 +19,7 @@ string UserAgentRP::deriveKeyFromPass(string password)
         SecByteBlock derived(AES::MAX_KEYLENGTH);
 
         // KDF function
-        PKCS5_PBKDF2_HMAC<SHA256> kdf;
+        CryptoPP::PKCS5_PBKDF2_HMAC<CryptoPP::SHA256> kdf;
         kdf.DeriveKey(derived.data(), derived.size(), purpose, (byte*)password.data(), password.size(), NULL, 0, iterations);
 
 
@@ -42,6 +42,58 @@ string UserAgentRP::deriveKeyFromPass(string password)
     return derivedKey;
 }
 
+vector<ProceduraVoto> UserAgentRP::parsingProcedure(string xmlFileProcedure)
+{
+
+}
+
+void UserAgentRP::login(QString username, QString password)
+{
+    SSLClient * rp_client = new SSLClient(this);
+    if(rp_client->connectTo(ipUrna)){
+        string xmlFileProcedure;
+        if(rp_client->queryAutenticazioneRP(username.toStdString(),password.toStdString(),xmlFileProcedure)){
+            vector <ProceduraVoto> procedureRP = parsingProcedure(xmlFileProcedure);
+            emit autenticazione_riuscita(procedureRP);
+            this->password = password.toStdString();
+        }
+        else{
+            emit errorCredenziali();
+        }
+
+    }
+    else{
+        cerr << "collegamento con l'urna non riuscito" << endl;
+        emit urnaNonRaggiungibile();
+    }
+    delete rp_client;
+}
+
+void UserAgentRP::doScrutinio(uint idProceduraSelezionata)
+{
+    string derivedKey = deriveKeyFromPass(password);
+    SSLClient * rp_client = new SSLClient(this);
+    if(rp_client->connectTo(ipUrna)){
+        if(rp_client->queryScrutinio(idProceduraSelezionata,derivedKey)){
+            emit scrutinioOK();
+        }
+        else{
+            emit erroreScrutinio();
+        }
+
+    }
+    else{
+        cerr << "collegamento con l'urna non riuscito" << endl;
+        emit urnaNonRaggiungibile();
+    }
+    delete rp_client;
+}
+
+void UserAgentRP::visualizzaRisultatiVoto(uint idProceduraSelezionata)
+{
+
+}
+
 string UserAgentRP::getPassword() const
 {
     return password;
@@ -50,5 +102,15 @@ string UserAgentRP::getPassword() const
 void UserAgentRP::setPassword(const string &value)
 {
     password = value;
+}
+
+void UserAgentRP::oneMoreVoteScrutinato()
+{
+    emit oneMore();
+}
+
+void UserAgentRP::totaleSchede(uint numeroSchede)
+{
+    emit totaleSchede(numeroSchede);
 }
 

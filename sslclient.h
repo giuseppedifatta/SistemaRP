@@ -52,8 +52,8 @@ public:
 
 
     //richieste per l'Urna
-    bool queryAutenticazioneRP(string username, string password);
-    bool queryScrutinio(uint idProcedura);
+    bool queryAutenticazioneRP(string username, string password, string &xmlFileProcedure);
+    bool queryScrutinio(uint idProcedura, string derivedKey);
     bool queryRisultatiVoto(uint idProcedura);
 
 

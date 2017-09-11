@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindowrp.cpp \
     useragentrp.cpp \
-    sslclient.cpp
+    sslclient.cpp \
+    proceduravoto.cpp
 
 HEADERS  += mainwindowrp.h \
     useragentrp.h \
-    sslclient.h
+    sslclient.h \
+    proceduravoto.h
 
 FORMS    += mainwindowrp.ui
 

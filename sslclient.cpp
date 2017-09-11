@@ -227,6 +227,99 @@ SSL * SSLClient::connectTo(const char* hostIP/*hostname*/){
     return this->ssl;
 }
 
+bool SSLClient::queryAutenticazioneRP(string username, string password, string &xmlFileProcedure)
+{
+    //richiesta servizio
+    int serviceCod = serviziUrna::autenticazioneRP;
+    stringstream ssCod;
+    ssCod << serviceCod;
+    string strCod = ssCod.str();
+    const char * charCod = strCod.c_str();
+    userAgentChiamante->mutex_stdout.lock();
+    cout << "ClientPV: richiedo il servizio: " << charCod << endl;
+    userAgentChiamante->mutex_stdout.unlock();
+    SSL_write(ssl,charCod,strlen(charCod));
+
+    //invia username
+    sendString_SSL(ssl,username);
+    //invia password
+    sendString_SSL(ssl,password);
+
+    //ricevi esito autenticazione
+    string str;
+    receiveString_SSL(ssl, str);
+    int esito = atoi(str.c_str());
+
+    if(esito == 0){
+        //ricevi stringa contenente il file xml con i dati delle procedure di cui RP è responsabile
+        receiveString_SSL(ssl,xmlFileProcedure);
+        return true;
+    }
+    else return false;
+
+
+}
+
+bool SSLClient::queryScrutinio(uint idProcedura, string derivedKey)
+{
+    //richiesta servizio
+    int serviceCod = serviziUrna::scrutinio;
+    stringstream ssCod;
+    ssCod << serviceCod;
+    string strCod = ssCod.str();
+    const char * charCod = strCod.c_str();
+    userAgentChiamante->mutex_stdout.lock();
+    cout << "ClientPV: richiedo il servizio: " << charCod << endl;
+    userAgentChiamante->mutex_stdout.unlock();
+    SSL_write(ssl,charCod,strlen(charCod));
+
+    //invia idProcedura da scrutinare
+    sendString_SSL(ssl,to_string(idProcedura));
+
+    //invia derivedKey per decifrare la chiave privata di RP
+    sendString_SSL(ssl,derivedKey);
+
+    //ricevi numero schede da scrutinare e segnalo alla view il numero di schede da scrutinare
+    string s;
+    receiveString_SSL(ssl,s);
+    uint numeroSchede = atoi(s.c_str());
+    userAgentChiamante->totaleSchede(numeroSchede);
+    //ciclo for, ad ogni iterazione
+    //ricevo che un'altra scheda è stata scrutinata
+    // segnalo alla view che è stato scrutinato un'altro voto rispetto al totale, così da aggiornare la progress bar
+    for(uint i=0; i < numeroSchede; i++){
+        string onemore;
+        receiveString_SSL(ssl,onemore);
+        userAgentChiamante->oneMoreVoteScrutinato();
+    }
+    //terminato il ciclo for lo scrutinio è terminato
+
+    //ricevi esitoScrutinio
+    string str;
+    receiveString_SSL(ssl, str);
+    int esito = atoi(str.c_str());
+
+    if(esito == 0){
+        return true;
+    }
+    else return false;
+
+}
+
+bool SSLClient::queryRisultatiVoto(uint idProcedura)
+{
+    //richiesta servizio
+    int serviceCod = serviziUrna::risultatiVoto;
+    stringstream ssCod;
+    ssCod << serviceCod;
+    string strCod = ssCod.str();
+    const char * charCod = strCod.c_str();
+    userAgentChiamante->mutex_stdout.lock();
+    cout << "ClientPV: richiedo il servizio: " << charCod << endl;
+    userAgentChiamante->mutex_stdout.unlock();
+    SSL_write(ssl,charCod,strlen(charCod));
+}
+
 void SSLClient::ShowCerts() {
     X509 *peer_cert;
     char *line;
