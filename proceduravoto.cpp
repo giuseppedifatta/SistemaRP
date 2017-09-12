@@ -59,6 +59,30 @@ void ProceduraVoto::setStato(const statiProcedura &value)
     stato = value;
 }
 
+void ProceduraVoto::setStato(const uint &stato){
+    switch(stato){
+    case ProceduraVoto::statiProcedura::creazione:
+        this->stato =  ProceduraVoto::statiProcedura::creazione;
+        break;
+    case ProceduraVoto::statiProcedura::programmata:
+        this->stato =  ProceduraVoto::statiProcedura::programmata;
+        break;
+    case ProceduraVoto::statiProcedura::in_corso:
+        this->stato =  ProceduraVoto::statiProcedura::in_corso;
+        break;
+    case ProceduraVoto::statiProcedura::conclusa:
+        this->stato =  ProceduraVoto::statiProcedura::conclusa;
+        break;
+    case ProceduraVoto::statiProcedura::da_eliminare:
+        this->stato =  ProceduraVoto::statiProcedura::da_eliminare;
+        break;
+    default:
+        this->stato =  ProceduraVoto::statiProcedura::undefined;
+        break;
+
+    }
+
+}
 
 string ProceduraVoto::getStatoAsString(ProceduraVoto::statiProcedura stato)
 {

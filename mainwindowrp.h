@@ -33,6 +33,7 @@ private:
     ProceduraVoto::statiProcedura statoProceduraSelezionata;
     QString descProceduraSelezionata;
 
+    void setTables();
 signals:
     void attemptLogin(QString username,QString password);
     void startScrutinio(uint idProcedura);

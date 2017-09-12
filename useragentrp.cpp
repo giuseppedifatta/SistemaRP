@@ -44,7 +44,81 @@ string UserAgentRP::deriveKeyFromPass(string password)
 
 vector<ProceduraVoto> UserAgentRP::parsingProcedure(string xmlFileProcedure)
 {
+    vector <ProceduraVoto> procedure;
+    XMLDocument xmlDoc;
+    xmlDoc.Parse(xmlFileProcedure.c_str());
 
+    XMLNode *rootNode = xmlDoc.FirstChild(); //procedureVotoRP
+
+
+    //ottieni
+    XMLElement * firstProceduraElement = rootNode->FirstChildElement("procedura");
+    XMLElement * lastProceduraElement = rootNode->LastChildElement("procedura");
+
+    XMLElement *proceduraElement = firstProceduraElement;
+    bool lastProcedura = false;
+    do{
+        ProceduraVoto pv;
+        //id
+        XMLElement * idElement = proceduraElement->FirstChildElement("id");
+        XMLNode * idInnerNode = idElement->FirstChild();
+        uint  id;
+        if(idInnerNode!=nullptr){
+            id = atoi(idInnerNode->ToText()->Value());
+        }
+        //descrizione
+        XMLElement * descrizioneElement = proceduraElement->FirstChildElement("descrizione");
+        XMLNode * descrizioneInnerNode = descrizioneElement->FirstChild();
+        string descrizione;
+        if(descrizioneInnerNode!=nullptr){
+            descrizione = descrizioneInnerNode->ToText()->Value();
+        }
+
+        //inizio
+        XMLElement * inizioElement = proceduraElement->FirstChildElement("inizio");
+        XMLNode * inizioInnerNode = inizioElement->FirstChild();
+        string inizio;
+        if(inizioInnerNode!=nullptr){
+            inizio = inizioInnerNode->ToText()->Value();
+        }
+
+        //fine
+        XMLElement * fineElement = proceduraElement->FirstChildElement("fine");
+        XMLNode * fineInnerNode = fineElement->FirstChild();
+        string fine;
+        if(fineInnerNode!=nullptr){
+            fine = fineInnerNode->ToText()->Value();
+        }
+
+        //stato
+        XMLElement * statoElement = proceduraElement->FirstChildElement("stato");
+        XMLNode * statoInnerNode = statoElement->FirstChild();
+        uint  stato;
+        if(statoInnerNode!=nullptr){
+            stato = atoi(statoInnerNode->ToText()->Value());
+        }
+
+        pv.setIdProceduraVoto(id);
+        pv.setDescrizione(descrizione);
+        pv.setData_ora_inizio(inizio);
+        pv.setData_ora_termine(fine);
+        pv.setStato(stato);
+
+        procedure.push_back(pv);
+
+        if(proceduraElement == lastProceduraElement){
+            lastProcedura = true;
+        }
+        else{
+            //accediamo alla successiva procedura
+            proceduraElement = proceduraElement->NextSiblingElement("procedura");
+            cout << "ottengo il puntatore alla successiva procedura" << endl;
+        }
+    }while(!lastProcedura);
+    cout << "non ci sono altre procedure da parsare" << endl;
+
+
+    return procedure;
 }
 
 void UserAgentRP::login(QString username, QString password)

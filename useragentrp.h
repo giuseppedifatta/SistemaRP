@@ -16,12 +16,14 @@
 #include "cryptopp/hmac.h"
 #include "cryptopp/sha.h"
 #include "cryptopp/aes.h"
+#include "tinyxml2.h"
 
 #include "sslclient.h"
 #include "proceduravoto.h"
 
 using namespace std;
 using namespace CryptoPP;
+using namespace tinyxml2;
 
 class UserAgentRP : public QObject
 {

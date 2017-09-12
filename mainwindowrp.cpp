@@ -10,7 +10,7 @@ MainWindowRP::MainWindowRP(QWidget *parent) :
     userAgent = new UserAgentRP(this);
     ui->stackedWidget->setCurrentIndex(InterfacceRP::login);
     ui->lineEdit_password->setEchoMode(QLineEdit::Password);
-
+    this->setTables();
 
     qRegisterMetaType< vector<ProceduraVoto> >( "vector<ProceduraVoto>" );
     QObject::connect(this,SIGNAL(attemptLogin(QString,QString)),userAgent,SLOT(login(QString,QString)));
@@ -32,7 +32,72 @@ MainWindowRP::~MainWindowRP()
 
 void MainWindowRP::showProcedureRP(vector<ProceduraVoto> pv)
 {
+    //pulizia tabella - tipo 1
+    ui->tableWidget_vistaProcedure->model()->removeRows(0,ui->tableWidget_vistaProcedure->rowCount());
+    //pulizia tabella - tipo 2
+    //    ui->tableWidget_vistaProcedure->clear();
+    //    ui->tableWidget_vistaProcedure->setRowCount(0);
+    for (uint row = 0; row < pv.size();row++){
+        ui->tableWidget_vistaProcedure->insertRow(ui->tableWidget_vistaProcedure->rowCount());
+        int rigaAggiunta = ui->tableWidget_vistaProcedure->rowCount()-1;
 
+        QTableWidgetItem *checkBoxItem = new QTableWidgetItem();
+        checkBoxItem->setToolTip("seleziona procedura della riga corrispondente");
+        checkBoxItem->setCheckState(Qt::Unchecked);
+        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,0,checkBoxItem);
+
+        uint idProcedura = pv.at(row).getIdProceduraVoto();
+        QTableWidgetItem *item = new QTableWidgetItem(QString::number(idProcedura));
+        item->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,1,item);
+
+        QString descrizione = QString::fromStdString(pv.at(row).getDescrizione());
+        item = new QTableWidgetItem(descrizione);
+        item->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,2,item);
+
+//        uint idRP = pv.at(row).getIdRP();
+//        item = new QTableWidgetItem(QString::number(idRP));
+//        item->setTextAlignment(Qt::AlignCenter);
+//        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,3,item);
+
+        QString qsInizio = QString::fromStdString(pv.at(row).getData_ora_inizio());
+        item = new QTableWidgetItem(qsInizio);
+        item->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,3,item);
+
+        QString qsTermine = QString::fromStdString(pv.at(row).getData_ora_termine());
+        item = new QTableWidgetItem(qsTermine);
+        item->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,4,item);
+
+//        uint numSchede = pv.at(row).getNumSchedeVoto();
+//        item = new QTableWidgetItem(QString::number(numSchede));
+//        item->setTextAlignment(Qt::AlignCenter);
+//        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,6,item);
+
+//        uint schedeInserite = pv.at(row).getSchedeInserite();
+//        item = new QTableWidgetItem(QString::number(schedeInserite));
+//        item->setTextAlignment(Qt::AlignCenter);
+//        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,7,item);
+
+        ProceduraVoto::statiProcedura statoProcedura = pv.at(row).getStato();
+        QString stato = QString::fromStdString(ProceduraVoto::getStatoAsString(statoProcedura));
+
+        item = new QTableWidgetItem(stato);
+        item->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,5,item);
+
+    }
+    ui->tableWidget_vistaProcedure->resizeColumnsToContents();
+    ui->tableWidget_vistaProcedure->horizontalHeader()->setStretchLastSection(true);
+
+    idProceduraSelezionata = -1;
+    statoProceduraSelezionata = ProceduraVoto::statiProcedura::undefined;
+
+    ui->pushButton_avviaScrutinio->setEnabled(false);
+    ui->pushButton_visualizzaRisultati->setEnabled(false);
+    ui->stackedWidget->setCurrentIndex(InterfacceRP::procedure);
 }
 
 void MainWindowRP::messageUrnaUnreachable()
@@ -154,3 +219,14 @@ void MainWindowRP::on_tableWidget_vistaProcedure_cellClicked(int row, int column
 }
 
 
+void MainWindowRP::setTables(){
+    QStringList tableHeaders;
+    tableHeaders << "seleziona" << "id Procedura Voto" << "Descrizione" << "Inizio" << "Termine"  << "Stato Procedura" ;
+
+    ui->tableWidget_vistaProcedure->setHorizontalHeaderLabels(tableHeaders);
+    //ui->tableWidget_lista_procedure->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidget_vistaProcedure->resizeColumnsToContents();
+    ui->tableWidget_vistaProcedure->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+
+}
