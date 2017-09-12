@@ -318,6 +318,9 @@ bool SSLClient::queryRisultatiVoto(uint idProcedura)
     cout << "ClientPV: richiedo il servizio: " << charCod << endl;
     userAgentChiamante->mutex_stdout.unlock();
     SSL_write(ssl,charCod,strlen(charCod));
+
+
+    //ricevi file xml dei risultati di voto
 }
 
 void SSLClient::ShowCerts() {
