@@ -53,6 +53,8 @@ void UserAgentRP::login(QString username, QString password)
     if(rp_client->connectTo(ipUrna)){
         string xmlFileProcedure;
         if(rp_client->queryAutenticazioneRP(username.toStdString(),password.toStdString(),xmlFileProcedure)){
+            cout << "xml delle procedure riceuto: " << endl;
+            cout << xmlFileProcedure << endl;
             vector <ProceduraVoto> procedureRP = parsingProcedure(xmlFileProcedure);
             emit autenticazione_riuscita(procedureRP);
             this->password = password.toStdString();

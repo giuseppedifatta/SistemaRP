@@ -52,6 +52,7 @@ private slots:
     void on_pushButton_doLogin_clicked();
 
     void on_tableWidget_vistaProcedure_cellClicked(int row, int column);
+
 };
 
 #endif // MAINWINDOWRP_H

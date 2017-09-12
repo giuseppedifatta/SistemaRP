@@ -251,6 +251,8 @@ bool SSLClient::queryAutenticazioneRP(string username, string password, string &
     int esito = atoi(str.c_str());
 
     if(esito == 0){
+        cout << "Autenticazione riuscita per l'RP: " << username << endl;
+        cout << "Ricevo le informazioni sulle procedure dell'RP che si è loggato" << endl;
         //ricevi stringa contenente il file xml con i dati delle procedure di cui RP è responsabile
         receiveString_SSL(ssl,xmlFileProcedure);
         return true;

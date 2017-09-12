@@ -9,6 +9,7 @@ MainWindowRP::MainWindowRP(QWidget *parent) :
     ui->setupUi(this);
     userAgent = new UserAgentRP(this);
     ui->stackedWidget->setCurrentIndex(InterfacceRP::login);
+    ui->lineEdit_password->setEchoMode(QLineEdit::Password);
 
 
     qRegisterMetaType< vector<ProceduraVoto> >( "vector<ProceduraVoto>" );
@@ -86,6 +87,13 @@ void MainWindowRP::on_pushButton_doLogin_clicked()
 {
     QString username = ui->lineEdit_username->text();
     QString password = ui->lineEdit_password->text();
+    if(username=="" || password==""){
+        QMessageBox msgBox(this);
+        msgBox.setWindowTitle("Error");
+        msgBox.setInformativeText("Inserire username e password per accedere");
+        msgBox.exec();
+        return;
+    }
     emit attemptLogin(username,password);
 }
 
@@ -144,3 +152,5 @@ void MainWindowRP::on_tableWidget_vistaProcedure_cellClicked(int row, int column
         }
     }
 }
+
+

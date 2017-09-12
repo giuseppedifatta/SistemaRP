@@ -62,12 +62,49 @@ background-color: rgb(49, 149, 255);
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page_login">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QGridLayout" name="gridLayout" rowstretch="0,1,0">
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="spacing">
+             <number>50</number>
+            </property>
+            <property name="leftMargin">
+             <number>50</number>
+            </property>
+            <property name="rightMargin">
+             <number>50</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="pushButton_closeApp">
+              <property name="text">
+               <string>Exit</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_doLogin">
+              <property name="text">
+               <string>Accedi</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_titleLogin">
+            <property name="text">
+             <string>LOGIN RESPONSABILE PROCEDIMENTO</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <layout class="QFormLayout" name="formLayout">
             <property name="formAlignment">
@@ -108,43 +145,6 @@ background-color: rgb(49, 149, 255);
              </widget>
             </item>
            </layout>
-          </item>
-          <item row="2" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="spacing">
-             <number>50</number>
-            </property>
-            <property name="leftMargin">
-             <number>50</number>
-            </property>
-            <property name="rightMargin">
-             <number>50</number>
-            </property>
-            <item>
-             <widget class="QPushButton" name="pushButton_closeApp">
-              <property name="text">
-               <string>Exit</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_doLogin">
-              <property name="text">
-               <string>Accedi</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_titleLogin">
-            <property name="text">
-             <string>LOGIN RESPONSABILE PROCEDIMENTO</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>
