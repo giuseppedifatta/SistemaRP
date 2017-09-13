@@ -169,7 +169,7 @@ void MainWindowRP::on_tableWidget_vistaProcedure_cellClicked(int row, int column
         if(ui->tableWidget_vistaProcedure->item(row,0)->checkState() == Qt::Checked){
 
             idProceduraSelezionata = ui->tableWidget_vistaProcedure->item(currentRow,1)->text().toUInt();
-            QString stato = ui->tableWidget_vistaProcedure->item(currentRow,8)->text();
+            QString stato = ui->tableWidget_vistaProcedure->item(currentRow,5)->text();
             statoProceduraSelezionata = ProceduraVoto::getStatoFromString(stato.toStdString());
             descProceduraSelezionata = ui->tableWidget_vistaProcedure->item(currentRow,2)->text();
             cout << "id Procedura selezionata: " << idProceduraSelezionata << ", stato: " << ProceduraVoto::getStatoAsString(statoProceduraSelezionata) << endl;

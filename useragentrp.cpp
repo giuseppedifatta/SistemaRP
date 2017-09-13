@@ -61,42 +61,27 @@ vector<ProceduraVoto> UserAgentRP::parsingProcedure(string xmlFileProcedure)
         ProceduraVoto pv;
         //id
         XMLElement * idElement = proceduraElement->FirstChildElement("id");
-        XMLNode * idInnerNode = idElement->FirstChild();
-        uint  id;
-        if(idInnerNode!=nullptr){
-            id = atoi(idInnerNode->ToText()->Value());
-        }
+        uint id;
+        const char * text = idElement->FirstChild()->ToText()->Value();
+        id = atoi(text);
         //descrizione
         XMLElement * descrizioneElement = proceduraElement->FirstChildElement("descrizione");
-        XMLNode * descrizioneInnerNode = descrizioneElement->FirstChild();
-        string descrizione;
-        if(descrizioneInnerNode!=nullptr){
-            descrizione = descrizioneInnerNode->ToText()->Value();
-        }
+        string descrizione = descrizioneElement->FirstChild()->ToText()->Value();
+
 
         //inizio
         XMLElement * inizioElement = proceduraElement->FirstChildElement("inizio");
-        XMLNode * inizioInnerNode = inizioElement->FirstChild();
-        string inizio;
-        if(inizioInnerNode!=nullptr){
-            inizio = inizioInnerNode->ToText()->Value();
-        }
+        string inizio = inizioElement->FirstChild()->ToText()->Value();
+
 
         //fine
         XMLElement * fineElement = proceduraElement->FirstChildElement("fine");
-        XMLNode * fineInnerNode = fineElement->FirstChild();
-        string fine;
-        if(fineInnerNode!=nullptr){
-            fine = fineInnerNode->ToText()->Value();
-        }
+        string fine = fineElement->FirstChild()->ToText()->Value();
 
         //stato
         XMLElement * statoElement = proceduraElement->FirstChildElement("stato");
-        XMLNode * statoInnerNode = statoElement->FirstChild();
-        uint  stato;
-        if(statoInnerNode!=nullptr){
-            stato = atoi(statoInnerNode->ToText()->Value());
-        }
+        const char * s = statoElement->FirstChild()->ToText()->Value();
+        uint  stato = atoi(s);
 
         pv.setIdProceduraVoto(id);
         pv.setDescrizione(descrizione);
