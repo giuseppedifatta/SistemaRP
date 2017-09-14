@@ -242,3 +242,8 @@ void MainWindowRP::setTables(){
 
 
 }
+
+void MainWindowRP::on_pushButton_avviaScrutinio_clicked()
+{
+    emit startScrutinio(idProceduraSelezionata);
+}

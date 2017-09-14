@@ -172,6 +172,6 @@ void UserAgentRP::oneMoreVoteScrutinato()
 
 void UserAgentRP::totaleSchede(uint numeroSchede)
 {
-    emit totaleSchede(numeroSchede);
+    emit schedeDaScrutinare(numeroSchede);
 }
 

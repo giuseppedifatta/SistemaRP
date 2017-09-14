@@ -54,6 +54,7 @@ private slots:
 
     void on_tableWidget_vistaProcedure_cellClicked(int row, int column);
 
+    void on_pushButton_avviaScrutinio_clicked();
 };
 
 #endif // MAINWINDOWRP_H
