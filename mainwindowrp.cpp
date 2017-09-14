@@ -49,43 +49,52 @@ void MainWindowRP::showProcedureRP(vector<ProceduraVoto> pv)
         uint idProcedura = pv.at(row).getIdProceduraVoto();
         QTableWidgetItem *item = new QTableWidgetItem(QString::number(idProcedura));
         item->setTextAlignment(Qt::AlignCenter);
+        item->setFlags(Qt::NoItemFlags);
+        item->setTextColor(Qt::black);
         ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,1,item);
 
         QString descrizione = QString::fromStdString(pv.at(row).getDescrizione());
         item = new QTableWidgetItem(descrizione);
         item->setTextAlignment(Qt::AlignCenter);
+        item->setFlags(Qt::NoItemFlags);
+        item->setTextColor(Qt::black);
         ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,2,item);
 
-//        uint idRP = pv.at(row).getIdRP();
-//        item = new QTableWidgetItem(QString::number(idRP));
-//        item->setTextAlignment(Qt::AlignCenter);
-//        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,3,item);
+        //        uint idRP = pv.at(row).getIdRP();
+        //        item = new QTableWidgetItem(QString::number(idRP));
+        //        item->setTextAlignment(Qt::AlignCenter);
+        //        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,3,item);
 
         QString qsInizio = QString::fromStdString(pv.at(row).getData_ora_inizio());
         item = new QTableWidgetItem(qsInizio);
         item->setTextAlignment(Qt::AlignCenter);
+        item->setFlags(Qt::NoItemFlags);
+        item->setTextColor(Qt::black);
         ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,3,item);
 
         QString qsTermine = QString::fromStdString(pv.at(row).getData_ora_termine());
         item = new QTableWidgetItem(qsTermine);
         item->setTextAlignment(Qt::AlignCenter);
+        item->setFlags(Qt::NoItemFlags);
+        item->setTextColor(Qt::black);
         ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,4,item);
 
-//        uint numSchede = pv.at(row).getNumSchedeVoto();
-//        item = new QTableWidgetItem(QString::number(numSchede));
-//        item->setTextAlignment(Qt::AlignCenter);
-//        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,6,item);
+        //        uint numSchede = pv.at(row).getNumSchedeVoto();
+        //        item = new QTableWidgetItem(QString::number(numSchede));
+        //        item->setTextAlignment(Qt::AlignCenter);
+        //        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,6,item);
 
-//        uint schedeInserite = pv.at(row).getSchedeInserite();
-//        item = new QTableWidgetItem(QString::number(schedeInserite));
-//        item->setTextAlignment(Qt::AlignCenter);
-//        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,7,item);
+        //        uint schedeInserite = pv.at(row).getSchedeInserite();
+        //        item = new QTableWidgetItem(QString::number(schedeInserite));
+        //        item->setTextAlignment(Qt::AlignCenter);
+        //        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,7,item);
 
         ProceduraVoto::statiProcedura statoProcedura = pv.at(row).getStato();
         QString stato = QString::fromStdString(ProceduraVoto::getStatoAsString(statoProcedura));
-
         item = new QTableWidgetItem(stato);
         item->setTextAlignment(Qt::AlignCenter);
+        item->setFlags(Qt::NoItemFlags);
+        item->setTextColor(Qt::black);
         ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,5,item);
 
     }
@@ -167,43 +176,46 @@ void MainWindowRP::on_tableWidget_vistaProcedure_cellClicked(int row, int column
     unsigned int currentRow = row;
     if(column==0){
         if(ui->tableWidget_vistaProcedure->item(row,0)->checkState() == Qt::Checked){
+            uint tempID = ui->tableWidget_vistaProcedure->item(currentRow,1)->text().toUInt();
+            if(tempID!=idProceduraSelezionata){
+                idProceduraSelezionata = tempID;
+                idProceduraSelezionata = ui->tableWidget_vistaProcedure->item(currentRow,1)->text().toUInt();
+                QString stato = ui->tableWidget_vistaProcedure->item(currentRow,5)->text();
+                statoProceduraSelezionata = ProceduraVoto::getStatoFromString(stato.toStdString());
+                descProceduraSelezionata = ui->tableWidget_vistaProcedure->item(currentRow,2)->text();
+                cout << "id Procedura selezionata: " << idProceduraSelezionata << ", stato: " << ProceduraVoto::getStatoAsString(statoProceduraSelezionata) << endl;
+                unsigned int numberRows = ui->tableWidget_vistaProcedure->rowCount();
 
-            idProceduraSelezionata = ui->tableWidget_vistaProcedure->item(currentRow,1)->text().toUInt();
-            QString stato = ui->tableWidget_vistaProcedure->item(currentRow,5)->text();
-            statoProceduraSelezionata = ProceduraVoto::getStatoFromString(stato.toStdString());
-            descProceduraSelezionata = ui->tableWidget_vistaProcedure->item(currentRow,2)->text();
-            cout << "id Procedura selezionata: " << idProceduraSelezionata << ", stato: " << ProceduraVoto::getStatoAsString(statoProceduraSelezionata) << endl;
-            unsigned int numberRows = ui->tableWidget_vistaProcedure->rowCount();
-
-            //se abbiamo selezionato una riga diversa dalla precedente, deselezioniamo qualsiasi selezione precedente
-            for (unsigned int rowIndex = 0; rowIndex < numberRows; rowIndex++){
-                if(rowIndex!=currentRow){
-                    ui->tableWidget_vistaProcedure->item(rowIndex,0)->setCheckState(Qt::Unchecked);
+                //se abbiamo selezionato una riga diversa dalla precedente, deselezioniamo qualsiasi selezione precedente
+                for (unsigned int rowIndex = 0; rowIndex < numberRows; rowIndex++){
+                    if(rowIndex!=currentRow){
+                        ui->tableWidget_vistaProcedure->item(rowIndex,0)->setCheckState(Qt::Unchecked);
+                    }
                 }
+
+                switch(statoProceduraSelezionata){
+                case ProceduraVoto::statiProcedura::creazione:
+                case ProceduraVoto::statiProcedura::programmata:
+                case ProceduraVoto::statiProcedura::da_eliminare:
+                case ProceduraVoto::statiProcedura::in_corso:
+                    ui->pushButton_avviaScrutinio->setEnabled(false);
+                    ui->pushButton_visualizzaRisultati->setEnabled(false);
+                    break;
+                case ProceduraVoto::statiProcedura::conclusa:
+                    ui->pushButton_avviaScrutinio->setEnabled(true);
+                    ui->pushButton_visualizzaRisultati->setEnabled(false);
+                    break;
+                case ProceduraVoto::statiProcedura::scrutinata:
+                    ui->pushButton_avviaScrutinio->setEnabled(true);
+                    ui->pushButton_visualizzaRisultati->setEnabled(true);
+                    break;
+                default:
+                    break;
+
+                }
+
+
             }
-
-            switch(statoProceduraSelezionata){
-            case ProceduraVoto::statiProcedura::creazione:
-            case ProceduraVoto::statiProcedura::programmata:
-            case ProceduraVoto::statiProcedura::da_eliminare:
-            case ProceduraVoto::statiProcedura::in_corso:
-                ui->pushButton_avviaScrutinio->setEnabled(false);
-                ui->pushButton_visualizzaRisultati->setEnabled(false);
-                break;
-            case ProceduraVoto::statiProcedura::conclusa:
-                ui->pushButton_avviaScrutinio->setEnabled(true);
-                ui->pushButton_visualizzaRisultati->setEnabled(false);
-                break;
-            case ProceduraVoto::statiProcedura::scrutinata:
-                ui->pushButton_avviaScrutinio->setEnabled(true);
-                ui->pushButton_visualizzaRisultati->setEnabled(true);
-                break;
-            default:
-                break;
-
-            }
-
-
         }
         else if(ui->tableWidget_vistaProcedure->item(row,0)->checkState() == Qt::Unchecked){
             int idProceduraDeselezionata = ui->tableWidget_vistaProcedure->item(currentRow,1)->text().toUInt();
