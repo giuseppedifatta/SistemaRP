@@ -32,7 +32,7 @@ string UserAgentRP::deriveKeyFromPass(string password)
 
         // Print stuff
         cout << "pass: " << password << endl;
-        //cout << "derived key: " << derivedKey << endl;
+        cout << "derived key: " << derivedKey << endl;
 
     }
     catch(CryptoPP::Exception& ex)
