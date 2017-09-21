@@ -47,9 +47,13 @@ public:
 
     void oneMoreVoteScrutinato();
     void totaleSchede(uint numeroSchede);
+    string getUserid() const;
+    void setUserid(const string &value);
+
 private:
     //dati membro
     const char * ipUrna;
+    string userid;
     string password;
     uint idRP;
 

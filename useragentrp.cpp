@@ -50,8 +50,11 @@ vector<ProceduraVoto> UserAgentRP::parsingProcedure(string xmlFileProcedure)
 
     XMLNode *rootNode = xmlDoc.FirstChild(); //procedureVotoRP
 
+    if(rootNode->FirstChildElement("procedura")==nullptr){
+        return procedure;
+    }
 
-    //ottieni
+    //primo e ultimo elemento procedura
     XMLElement * firstProceduraElement = rootNode->FirstChildElement("procedura");
     XMLElement * lastProceduraElement = rootNode->LastChildElement("procedura");
 
@@ -112,11 +115,11 @@ void UserAgentRP::login(QString username, QString password)
     if(rp_client->connectTo(ipUrna)){
         string xmlFileProcedure;
         if(rp_client->queryAutenticazioneRP(username.toStdString(),password.toStdString(),xmlFileProcedure)){
-            cout << "xml delle procedure riceuto: " << endl;
+            cout << "xml delle procedure ricevuto: " << endl;
             cout << xmlFileProcedure << endl;
             vector <ProceduraVoto> procedureRP = parsingProcedure(xmlFileProcedure);
-            emit autenticazione_riuscita(procedureRP);
-            this->password = password.toStdString();
+            emit autenticazione_riuscita(procedureRP); this->password = password.toStdString();
+            this->userid = username.toStdString();
         }
         else{
             emit errorCredenziali();
@@ -135,8 +138,11 @@ void UserAgentRP::doScrutinio(uint idProceduraSelezionata)
     string derivedKey = deriveKeyFromPass(password);
     SSLClient * rp_client = new SSLClient(this);
     if(rp_client->connectTo(ipUrna)){
-        if(rp_client->queryScrutinio(idProceduraSelezionata,derivedKey)){
+        string xmlProcedureAggiornate;
+        if(rp_client->queryScrutinio(idProceduraSelezionata,derivedKey, xmlProcedureAggiornate)){
             emit scrutinioOK();
+            vector <ProceduraVoto> procedure = this->parsingProcedure(xmlProcedureAggiornate);
+            emit this->autenticazione_riuscita(procedure);//riutilizzo il segnale che è collegato allo slot per la visualizzazione delle procedure
         }
         else{
             emit erroreScrutinio();
@@ -173,5 +179,15 @@ void UserAgentRP::oneMoreVoteScrutinato()
 void UserAgentRP::totaleSchede(uint numeroSchede)
 {
     emit schedeDaScrutinare(numeroSchede);
+}
+
+string UserAgentRP::getUserid() const
+{
+    return userid;
+}
+
+void UserAgentRP::setUserid(const string &value)
+{
+    userid = value;
 }
 

@@ -262,7 +262,7 @@ bool SSLClient::queryAutenticazioneRP(string username, string password, string &
 
 }
 
-bool SSLClient::queryScrutinio(uint idProcedura, string derivedKey)
+bool SSLClient::queryScrutinio(uint idProcedura, string derivedKey, string &xmlProcedureAggiornate)
 {
     //richiesta servizio
     int serviceCod = serviziUrna::scrutinio;
@@ -277,9 +277,10 @@ bool SSLClient::queryScrutinio(uint idProcedura, string derivedKey)
 
     //invia idProcedura da scrutinare
     sendString_SSL(ssl,to_string(idProcedura));
-
+    cout << "inviato id Procedura da scrutinare: " << idProcedura << endl;
     //invia derivedKey per decifrare la chiave privata di RP
     sendString_SSL(ssl,derivedKey);
+    cout << "inviato derivedKey per decifrare la chiaver privata di RP: " << derivedKey << endl;
 
     //ricevi numero schede da scrutinare e segnalo alla view il numero di schede da scrutinare
     string s;
@@ -303,6 +304,9 @@ bool SSLClient::queryScrutinio(uint idProcedura, string derivedKey)
     int esito = atoi(str.c_str());
 
     if(esito == 0){
+        //invio userid per ricevere le mie procedure aggiornate
+        sendString_SSL(ssl,userAgentChiamante->getUserid());
+        receiveString_SSL(ssl, xmlProcedureAggiornate);
         return true;
     }
     else return false;

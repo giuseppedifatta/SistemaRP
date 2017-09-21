@@ -38,6 +38,7 @@ signals:
     void attemptLogin(QString username,QString password);
     void startScrutinio(uint idProcedura);
     void needRisultatiVoto(uint idProcedura);
+
 public slots:
     void showProcedureRP(vector <ProceduraVoto> pv);
     void messageUrnaUnreachable();
@@ -55,6 +56,7 @@ private slots:
     void on_tableWidget_vistaProcedure_cellClicked(int row, int column);
 
     void on_pushButton_avviaScrutinio_clicked();
+    void on_pushButton_logout_clicked();
 };
 
 #endif // MAINWINDOWRP_H

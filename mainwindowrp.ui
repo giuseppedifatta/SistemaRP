@@ -62,7 +62,7 @@ background-color: rgb(49, 149, 255);
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page_login">
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -153,7 +153,7 @@ background-color: rgb(49, 149, 255);
       <widget class="QWidget" name="page_visualizzaProcedurePersonali">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0">
+         <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0">
           <property name="verticalSpacing">
            <number>25</number>
           </property>

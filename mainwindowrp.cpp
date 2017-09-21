@@ -32,11 +32,28 @@ MainWindowRP::~MainWindowRP()
 
 void MainWindowRP::showProcedureRP(vector<ProceduraVoto> pv)
 {
+    ui->lineEdit_password->clear();
+    ui->lineEdit_username->clear();
     //pulizia tabella - tipo 1
     ui->tableWidget_vistaProcedure->model()->removeRows(0,ui->tableWidget_vistaProcedure->rowCount());
+
+    idProceduraSelezionata = -1;
+    statoProceduraSelezionata = ProceduraVoto::statiProcedura::undefined;
+    ui->pushButton_avviaScrutinio->setEnabled(false);
+    ui->pushButton_visualizzaRisultati->setEnabled(false);
+
     //pulizia tabella - tipo 2
     //    ui->tableWidget_vistaProcedure->clear();
     //    ui->tableWidget_vistaProcedure->setRowCount(0);
+    if (pv.size() == 0){
+        ui->stackedWidget->setCurrentIndex(InterfacceRP::procedure);
+        QMessageBox msgBox(this);
+
+        msgBox.setInformativeText("Non è presente alcuna procedura di cui sei responsabile.");
+        msgBox.exec();
+
+        return;
+    }
     for (uint row = 0; row < pv.size();row++){
         ui->tableWidget_vistaProcedure->insertRow(ui->tableWidget_vistaProcedure->rowCount());
         int rigaAggiunta = ui->tableWidget_vistaProcedure->rowCount()-1;
@@ -101,11 +118,7 @@ void MainWindowRP::showProcedureRP(vector<ProceduraVoto> pv)
     ui->tableWidget_vistaProcedure->resizeColumnsToContents();
     ui->tableWidget_vistaProcedure->horizontalHeader()->setStretchLastSection(true);
 
-    idProceduraSelezionata = -1;
-    statoProceduraSelezionata = ProceduraVoto::statiProcedura::undefined;
 
-    ui->pushButton_avviaScrutinio->setEnabled(false);
-    ui->pushButton_visualizzaRisultati->setEnabled(false);
     ui->stackedWidget->setCurrentIndex(InterfacceRP::procedure);
 }
 
@@ -176,7 +189,7 @@ void MainWindowRP::on_tableWidget_vistaProcedure_cellClicked(int row, int column
     unsigned int currentRow = row;
     if(column==0){
         if(ui->tableWidget_vistaProcedure->item(row,0)->checkState() == Qt::Checked){
-            uint tempID = ui->tableWidget_vistaProcedure->item(currentRow,1)->text().toUInt();
+            int tempID = ui->tableWidget_vistaProcedure->item(currentRow,1)->text().toInt();
             if(tempID!=idProceduraSelezionata){
                 idProceduraSelezionata = tempID;
                 idProceduraSelezionata = ui->tableWidget_vistaProcedure->item(currentRow,1)->text().toUInt();
@@ -246,4 +259,12 @@ void MainWindowRP::setTables(){
 void MainWindowRP::on_pushButton_avviaScrutinio_clicked()
 {
     emit startScrutinio(idProceduraSelezionata);
+}
+
+void MainWindowRP::on_pushButton_logout_clicked()
+{
+    //TODO comunica all'urna che stai effettuando il logout
+
+    cout << "Logout" << endl;
+    ui->stackedWidget->setCurrentIndex(InterfacceRP::login);
 }
