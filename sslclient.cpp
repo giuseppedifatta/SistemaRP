@@ -301,8 +301,9 @@ bool SSLClient::queryScrutinio(uint idProcedura, string derivedKey, string &xmlP
     //ricevi esitoScrutinio
     string str;
     receiveString_SSL(ssl, str);
+    cout << "Stringa stato ricevuta: " << str << endl;
     int esito = atoi(str.c_str());
-
+    cout << "esito scrutinio: " << esito << endl;
     if(esito == 0){
         //invio userid per ricevere le mie procedure aggiornate
         sendString_SSL(ssl,userAgentChiamante->getUserid());
