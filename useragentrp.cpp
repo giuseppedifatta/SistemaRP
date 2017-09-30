@@ -5,9 +5,9 @@ UserAgentRP::UserAgentRP(QObject *parent) : QObject(parent)
     ipUrna = "192.168.19.130";
 }
 
-string UserAgentRP::deriveKeyFromPass(string password)
+string UserAgentRP::deriveKeyFromPass(string password,string salt)
 {
-    string derivedKey;
+    string encodedDerivedKey;
     try {
 
         // KDF parameters
@@ -20,26 +20,26 @@ string UserAgentRP::deriveKeyFromPass(string password)
 
         // KDF function
         CryptoPP::PKCS5_PBKDF2_HMAC<CryptoPP::SHA256> kdf;
-        kdf.DeriveKey(derived.data(), derived.size(), purpose, (byte*)password.data(), password.size(), NULL, 0, iterations);
+        kdf.DeriveKey(derived.data(), derived.size(), purpose, (byte*)password.data(), password.size(), (byte *) salt.data(), salt.size(), iterations);
 
 
 
 
         // Encode derived
-        HexEncoder hex(new StringSink(derivedKey));
+        HexEncoder hex(new StringSink(encodedDerivedKey));
         hex.Put(derived.data(), derived.size());
         hex.MessageEnd();
 
         // Print stuff
         cout << "pass: " << password << endl;
-        cout << "derived key: " << derivedKey << endl;
+        cout << "derived key: " << encodedDerivedKey << endl;
 
     }
     catch(CryptoPP::Exception& ex)
     {
         cerr << ex.what() << endl;
     }
-    return derivedKey;
+    return encodedDerivedKey;
 }
 
 vector<ProceduraVoto> UserAgentRP::parsingProcedure(string xmlFileProcedure)
@@ -114,12 +114,15 @@ void UserAgentRP::login(QString username, QString password)
     SSLClient * rp_client = new SSLClient(this);
     if(rp_client->connectTo(ipUrna)){
         string xmlFileProcedure;
-        if(rp_client->queryAutenticazioneRP(username.toStdString(),password.toStdString(),xmlFileProcedure)){
+        string saltScrutinio;
+        if(rp_client->queryAutenticazioneRP(username.toStdString(),password.toStdString(),xmlFileProcedure,saltScrutinio)){
             cout << "xml delle procedure ricevuto: " << endl;
             cout << xmlFileProcedure << endl;
             vector <ProceduraVoto> procedureRP = parsingProcedure(xmlFileProcedure);
-            emit autenticazione_riuscita(procedureRP); this->password = password.toStdString();
+            emit autenticazione_riuscita(procedureRP);
+            this->password = password.toStdString();
             this->userid = username.toStdString();
+            this->saltScrutinio = saltScrutinio;
         }
         else{
             emit errorCredenziali();
@@ -135,7 +138,7 @@ void UserAgentRP::login(QString username, QString password)
 
 void UserAgentRP::doScrutinio(uint idProceduraSelezionata)
 {
-    string derivedKey = deriveKeyFromPass(password);
+    string derivedKey = deriveKeyFromPass(password,saltScrutinio);
     SSLClient * rp_client = new SSLClient(this);
     if(rp_client->connectTo(ipUrna)){
         string xmlProcedureAggiornate;
@@ -191,3 +194,20 @@ void UserAgentRP::setUserid(const string &value)
     userid = value;
 }
 
+string UserAgentRP::hashPassword( string plainPass, string salt){
+    SecByteBlock result(32);
+    string hexResult;
+
+    CryptoPP::PKCS5_PBKDF2_HMAC<CryptoPP::SHA256> pbkdf;
+
+    pbkdf.DeriveKey(result, result.size(),0x00,(byte *) plainPass.data(), plainPass.size(),(byte *) salt.data(), salt.size(),10000);
+
+    //ArraySource resultEncoder(result,result.size(), true, new HexEncoder(new StringSink(hexResult)));
+
+    HexEncoder hex(new StringSink(hexResult));
+    hex.Put(result.data(), result.size());
+    hex.MessageEnd();
+
+    return hexResult;
+
+}

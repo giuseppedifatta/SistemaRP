@@ -227,7 +227,7 @@ SSL * SSLClient::connectTo(const char* hostIP/*hostname*/){
     return this->ssl;
 }
 
-bool SSLClient::queryAutenticazioneRP(string username, string password, string &xmlFileProcedure)
+bool SSLClient::queryAutenticazioneRP(string username, string password, string &xmlFileProcedure, string &saltScrutinio)
 {
     //richiesta servizio
     int serviceCod = serviziUrna::autenticazioneRP;
@@ -242,8 +242,13 @@ bool SSLClient::queryAutenticazioneRP(string username, string password, string &
 
     //invia username
     sendString_SSL(ssl,username);
+
+    string saltPassword;
+    receiveString_SSL(ssl, saltPassword);
+
+    string passwordHash = this->userAgentChiamante->hashPassword(password,saltScrutinio);
     //invia password
-    sendString_SSL(ssl,password);
+    sendString_SSL(ssl,passwordHash);
 
     //ricevi esito autenticazione
     string str;
@@ -255,6 +260,7 @@ bool SSLClient::queryAutenticazioneRP(string username, string password, string &
         cout << "Ricevo le informazioni sulle procedure dell'RP che si è loggato" << endl;
         //ricevi stringa contenente il file xml con i dati delle procedure di cui RP è responsabile
         receiveString_SSL(ssl,xmlFileProcedure);
+        receiveString_SSL(ssl, saltScrutinio);
         return true;
     }
     else return false;

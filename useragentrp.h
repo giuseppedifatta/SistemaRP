@@ -49,18 +49,21 @@ public:
     void totaleSchede(uint numeroSchede);
     string getUserid() const;
     void setUserid(const string &value);
-
+    string deriveKeyFromPass(string password, string salt);
+    string hashPassword(string plainPass, string salt);
 private:
     //dati membro
     const char * ipUrna;
     string userid;
     string password;
+    string saltScrutinio;
     uint idRP;
 
 
     //funzioni membro
-    string deriveKeyFromPass(string password);
+
     vector <ProceduraVoto> parsingProcedure(string xmlFileProcedure);
+
 
 signals:
     void autenticazione_riuscita(vector <ProceduraVoto>);
