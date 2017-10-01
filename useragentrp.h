@@ -51,6 +51,9 @@ public:
     void setUserid(const string &value);
     string deriveKeyFromPass(string password, string salt);
     string hashPassword(string plainPass, string salt);
+    string getPublicKeyRP() const;
+    void setPublicKeyRP(const string &value);
+
 private:
     //dati membro
     const char * ipUrna;
@@ -58,6 +61,7 @@ private:
     string password;
     string saltScrutinio;
     uint idRP;
+    string publicKeyRP;
 
 
     //funzioni membro

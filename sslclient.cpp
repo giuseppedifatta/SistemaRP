@@ -261,6 +261,10 @@ bool SSLClient::queryAutenticazioneRP(string username, string password, string &
         //ricevi stringa contenente il file xml con i dati delle procedure di cui RP è responsabile
         receiveString_SSL(ssl,xmlFileProcedure);
         receiveString_SSL(ssl, saltScrutinio);
+        //ricevi chiave publica RP
+        string publicKeyRP;
+        receiveString_SSL(ssl,publicKeyRP);
+        userAgentChiamante->setPublicKeyRP(publicKeyRP);
         return true;
     }
     else return false;
@@ -297,11 +301,11 @@ bool SSLClient::queryScrutinio(uint idProcedura, string derivedKey, string &xmlP
     //ciclo for, ad ogni iterazione
     //ricevo che un'altra scheda è stata scrutinata
     // segnalo alla view che è stato scrutinato un'altro voto rispetto al totale, così da aggiornare la progress bar
-//    for(uint i=0; i < numeroSchede; i++){
-//        string onemore;
-//        receiveString_SSL(ssl,onemore);
-//        userAgentChiamante->oneMoreVoteScrutinato();
-//    }
+    //    for(uint i=0; i < numeroSchede; i++){
+    //        string onemore;
+    //        receiveString_SSL(ssl,onemore);
+    //        userAgentChiamante->oneMoreVoteScrutinato();
+    //    }
     //terminato il ciclo for lo scrutinio è terminato
 
     //ricevi esitoScrutinio
