@@ -211,3 +211,13 @@ string UserAgentRP::hashPassword( string plainPass, string salt){
     return hexResult;
 
 }
+
+string UserAgentRP::getPublicKeyRP() const
+{
+    return publicKeyRP;
+}
+
+void UserAgentRP::setPublicKeyRP(const string &value)
+{
+    publicKeyRP = value;
+}
