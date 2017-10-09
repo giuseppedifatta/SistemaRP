@@ -21,7 +21,7 @@ private:
     BIO* outbio;
     int server_sock;
     SSL * ssl;
-    const char * PV_IPaddress;
+    const char * Server_IPaddress;
 
     UserAgentRP *userAgentChiamante;
 

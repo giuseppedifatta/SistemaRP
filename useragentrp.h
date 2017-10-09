@@ -45,6 +45,11 @@ public:
         undefined
     };
 
+    enum autenticato{
+            authenticated,
+            not_authenticated
+        };
+
     void oneMoreVoteScrutinato();
     void totaleSchede(uint numeroSchede);
     string getUserid() const;

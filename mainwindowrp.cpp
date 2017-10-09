@@ -55,7 +55,9 @@ void MainWindowRP::showProcedureRP(vector<ProceduraVoto> pv)
         return;
     }
     for (uint row = 0; row < pv.size();row++){
-        ui->tableWidget_vistaProcedure->insertRow(ui->tableWidget_vistaProcedure->rowCount());
+        uint indexNewRow = ui->tableWidget_vistaProcedure->rowCount();
+        cout << "indice nuova riga: " << indexNewRow << endl;
+         ui->tableWidget_vistaProcedure->insertRow(indexNewRow);
         int rigaAggiunta = ui->tableWidget_vistaProcedure->rowCount()-1;
 
         QTableWidgetItem *checkBoxItem = new QTableWidgetItem();

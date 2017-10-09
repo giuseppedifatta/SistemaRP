@@ -2,7 +2,7 @@
 
 UserAgentRP::UserAgentRP(QObject *parent) : QObject(parent)
 {
-    ipUrna = "192.168.19.130";
+    ipUrna = "192.168.19.134";
 }
 
 string UserAgentRP::deriveKeyFromPass(string password,string salt)
@@ -197,10 +197,11 @@ void UserAgentRP::setUserid(const string &value)
 string UserAgentRP::hashPassword( string plainPass, string salt){
     SecByteBlock result(32);
     string hexResult;
+    uint iterations = 10000;
 
     CryptoPP::PKCS5_PBKDF2_HMAC<CryptoPP::SHA256> pbkdf;
 
-    pbkdf.DeriveKey(result, result.size(),0x00,(byte *) plainPass.data(), plainPass.size(),(byte *) salt.data(), salt.size(),10000);
+    pbkdf.DeriveKey(result, result.size(),0x00,(byte *) plainPass.data(), plainPass.size(),(byte *) salt.data(), salt.size(),iterations);
 
     //ArraySource resultEncoder(result,result.size(), true, new HexEncoder(new StringSink(hexResult)));
 

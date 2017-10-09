@@ -90,7 +90,7 @@ int SSLClient::create_socket(/*const char * hostIP*//*hostname*/const char * por
     */
 
     // commentare la riga sotto se non si vuole usare l'ip dell'host, ma l'hostname
-    dest_addr.sin_addr.s_addr = inet_addr(this->PV_IPaddress);
+    dest_addr.sin_addr.s_addr = inet_addr(this->Server_IPaddress);
 
     /* ---------------------------------------------------------- *
      * create the basic TCP socket                                *
@@ -113,7 +113,7 @@ int SSLClient::create_socket(/*const char * hostIP*//*hostname*/const char * por
     if (res  == -1) {
         userAgentChiamante->mutex_stdout.lock();
         BIO_printf(this->outbio, "ClientSeggio: Error: Cannot connect to host %s [%s] on port %d.\n",
-                   this->PV_IPaddress/*hostname*/, address_printable, portCod);
+                   this->Server_IPaddress/*hostname*/, address_printable, portCod);
         userAgentChiamante->mutex_stdout.unlock();
 
 
@@ -121,7 +121,7 @@ int SSLClient::create_socket(/*const char * hostIP*//*hostname*/const char * por
     else {
         userAgentChiamante->mutex_stdout.lock();
         BIO_printf(this->outbio, "ClientSeggio: Successfully connect to host %s [%s] on port %d.\n",
-                   this->PV_IPaddress/*hostname*/, address_printable, portCod);
+                   this->Server_IPaddress/*hostname*/, address_printable, portCod);
         cout << "ClientSeggio: Descrittore socket: " << this->server_sock << endl;
         userAgentChiamante->mutex_stdout.unlock();
 
@@ -135,7 +135,7 @@ SSL * SSLClient::connectTo(const char* hostIP/*hostname*/){
     cout << "ClientSeggio: Connecting to " << hostIP << endl;
     userAgentChiamante->mutex_stdout.unlock();
 
-    this->PV_IPaddress = hostIP;
+    this->Server_IPaddress = hostIP;
 
     const char  port[] = SERVER_PORT;
 
@@ -151,14 +151,14 @@ SSL * SSLClient::connectTo(const char* hostIP/*hostname*/){
     /* ---------------------------------------------------------- *
      * Make the underlying TCP socket connection                  *
      * ---------------------------------------------------------- */
-    int ret = create_socket(/*this->PV_IPaddress *//*hostname,*/port);
+    int ret = create_socket(/*this->Server_IPaddress *//*hostname,*/port);
 
 
     if (ret == 0){
 
         userAgentChiamante->mutex_stdout.lock();
         BIO_printf(this->outbio,"ClientSeggio: Successfully create the socket for TCP connection to: %s \n",
-                   this->PV_IPaddress /*hostname*/);
+                   this->Server_IPaddress /*hostname*/);
         userAgentChiamante->mutex_stdout.unlock();
     }
     else {
@@ -166,7 +166,7 @@ SSL * SSLClient::connectTo(const char* hostIP/*hostname*/){
 
         userAgentChiamante->mutex_stdout.lock();
         BIO_printf(this->outbio,"ClientSeggio: Unable to create the socket for TCP connection to: %s \n",
-                   this->PV_IPaddress /*hostname*/);
+                   this->Server_IPaddress /*hostname*/);
         userAgentChiamante->mutex_stdout.unlock();
         SSL_free(this->ssl);
         this->ssl = nullptr;
@@ -183,7 +183,7 @@ SSL * SSLClient::connectTo(const char* hostIP/*hostname*/){
     if (SSL_set_fd(this->ssl, this->server_sock) != 1) {
 
         userAgentChiamante->mutex_stdout.lock();
-        BIO_printf(this->outbio, "ClientSeggio: Error: Connection to %s failed \n", this->PV_IPaddress /*hostname*/);
+        BIO_printf(this->outbio, "ClientSeggio: Error: Connection to %s failed \n", this->Server_IPaddress /*hostname*/);
         userAgentChiamante->mutex_stdout.unlock();
 
         SSL_free(this->ssl);
@@ -195,7 +195,7 @@ SSL * SSLClient::connectTo(const char* hostIP/*hostname*/){
     }
     else
         userAgentChiamante->mutex_stdout.lock();
-    BIO_printf(this->outbio, "ClientSeggio: Ok: Connection to %s \n", this->PV_IPaddress /*hostname*/);
+    BIO_printf(this->outbio, "ClientSeggio: Ok: Connection to %s \n", this->Server_IPaddress /*hostname*/);
     userAgentChiamante->mutex_stdout.unlock();
     /* ---------------------------------------------------------- *
      * Try to SSL-connect here, returns 1 for success             *
@@ -205,7 +205,7 @@ SSL * SSLClient::connectTo(const char* hostIP/*hostname*/){
 
         userAgentChiamante->mutex_stdout.lock();
         BIO_printf(this->outbio, "ClientSeggio: Error: Could not build a SSL session to: %s\n",
-                   this->PV_IPaddress /*hostname*/);
+                   this->Server_IPaddress /*hostname*/);
         userAgentChiamante->mutex_stdout.unlock();
 
         SSL_free(this->ssl);
@@ -218,11 +218,11 @@ SSL * SSLClient::connectTo(const char* hostIP/*hostname*/){
     else{
         userAgentChiamante->mutex_stdout.lock();
         BIO_printf(this->outbio, "ClientSeggio: Successfully enabled SSL/TLS session to: %s\n",
-                   this->PV_IPaddress /*hostname*/);
+                   this->Server_IPaddress /*hostname*/);
         userAgentChiamante->mutex_stdout.unlock();
     }
     this->ShowCerts();
-    this->verify_ServerCert(/*this->PV_IPaddress *//*hostname*/);
+    this->verify_ServerCert(/*this->Server_IPaddress *//*hostname*/);
 
     return this->ssl;
 }
@@ -246,16 +246,18 @@ bool SSLClient::queryAutenticazioneRP(string username, string password, string &
     string saltPassword;
     receiveString_SSL(ssl, saltPassword);
 
-    string passwordHash = this->userAgentChiamante->hashPassword(password,saltScrutinio);
-    //invia password
+    string passwordHash = this->userAgentChiamante->hashPassword(password,saltPassword);
+    //invia hash della password
     sendString_SSL(ssl,passwordHash);
 
     //ricevi esito autenticazione
     string str;
-    receiveString_SSL(ssl, str);
-    int esito = atoi(str.c_str());
+    int esito = userAgentChiamante->not_authenticated;
+    if(receiveString_SSL(ssl, str)!=0){
+        esito = atoi(str.c_str());
+    }
 
-    if(esito == 0){
+    if(esito == userAgentChiamante->authenticated){
         cout << "Autenticazione riuscita per l'RP: " << username << endl;
         cout << "Ricevo le informazioni sulle procedure dell'RP che si è loggato" << endl;
         //ricevi stringa contenente il file xml con i dati delle procedure di cui RP è responsabile
@@ -290,14 +292,20 @@ bool SSLClient::queryScrutinio(uint idProcedura, string derivedKey, string &xmlP
     cout << "inviato id Procedura da scrutinare: " << idProcedura << endl;
     //invia derivedKey per decifrare la chiave privata di RP
     sendString_SSL(ssl,derivedKey);
-    cout << "inviato derivedKey per decifrare la chiaver privata di RP: " << derivedKey << endl;
+    cout << "inviata derivedKey per decifrare la chiaver privata di RP: " << derivedKey << endl;
 
     //ricevi numero schede da scrutinare e segnalo alla view il numero di schede da scrutinare
     string s;
-    receiveString_SSL(ssl,s);
-    uint numeroSchede = atoi(s.c_str());
-    userAgentChiamante->totaleSchede(numeroSchede);
+    uint numeroSchede;
+    if( receiveString_SSL(ssl,s) !=0){
+        numeroSchede = atoi(s.c_str());
+        userAgentChiamante->totaleSchede(numeroSchede);
+        cout << "Numero schede da scrutinare: " << numeroSchede << endl;
+    }
+    else{
+        return false;
 
+    }
     //ciclo for, ad ogni iterazione
     //ricevo che un'altra scheda è stata scrutinata
     // segnalo alla view che è stato scrutinato un'altro voto rispetto al totale, così da aggiornare la progress bar
@@ -310,9 +318,11 @@ bool SSLClient::queryScrutinio(uint idProcedura, string derivedKey, string &xmlP
 
     //ricevi esitoScrutinio
     string str;
-    receiveString_SSL(ssl, str);
-    cout << "Stringa stato ricevuta: " << str << endl;
-    int esito = atoi(str.c_str());
+    int esito = 1;
+    if(receiveString_SSL(ssl, str)!=0){
+        cout << "Stringa stato ricevuta: " << str << endl;
+        esito = atoi(str.c_str());
+    }
     cout << "esito scrutinio: " << esito << endl;
     if(esito == 0){
         //invio userid per ricevere le mie procedure aggiornate
@@ -380,13 +390,13 @@ void SSLClient::verify_ServerCert(/*const char * hostIPhostname*/) {
     if (peer_cert == NULL){
         userAgentChiamante->mutex_stdout.lock();
         BIO_printf(this->outbio, "ClientSeggio: Error: Could not get a certificate from: %s.\n",
-                   this->PV_IPaddress/*hostname*/);
+                   this->Server_IPaddress/*hostname*/);
         userAgentChiamante->mutex_stdout.unlock();
     }
     else{
         userAgentChiamante->mutex_stdout.lock();
         BIO_printf(this->outbio, "ClientSeggio: Retrieved the server's certificate from: %s.\n",
-                   this->PV_IPaddress/*hostname*/);
+                   this->Server_IPaddress/*hostname*/);
         userAgentChiamante->mutex_stdout.unlock();
     }
 
