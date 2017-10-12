@@ -334,7 +334,7 @@ bool SSLClient::queryScrutinio(uint idProcedura, string derivedKey, string &xmlP
 
 }
 
-bool SSLClient::queryRisultatiVoto(uint idProcedura)
+bool SSLClient::queryRisultatiVoto(uint idProcedura, string &risultatiScrutinioXML,string &encodedSignRP)
 {
     //richiesta servizio
     int serviceCod = serviziUrna::risultatiVoto;
@@ -348,7 +348,25 @@ bool SSLClient::queryRisultatiVoto(uint idProcedura)
     SSL_write(ssl,charCod,strlen(charCod));
 
 
-    //ricevi file xml dei risultati di voto
+    sendString_SSL(ssl,to_string(idProcedura));
+
+    uint esito = 1;
+    string s;
+    if(receiveString_SSL(ssl,s) != 0){
+        esito = atoi(s.c_str());
+    }
+    else {return false;}
+
+    if (esito == 0){
+        if(receiveString_SSL(ssl, risultatiScrutinioXML)==0){
+            return false;
+        }
+        if(receiveString_SSL(ssl,encodedSignRP) == 0){
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void SSLClient::ShowCerts() {

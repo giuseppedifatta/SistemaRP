@@ -161,7 +161,28 @@ void UserAgentRP::doScrutinio(uint idProceduraSelezionata)
 
 void UserAgentRP::visualizzaRisultatiVoto(uint idProceduraSelezionata)
 {
+    SSLClient * rp_client = new SSLClient(this);
+    if(rp_client->connectTo(ipUrna)){
+        string risultatiVotoXML,encodedSignRP;
+        if(rp_client->queryRisultatiVoto(idProceduraSelezionata,risultatiVotoXML,encodedSignRP)){
 
+            //verifica firma di RP sui risultatiRicevuti
+            int verifica = this->verifySignString_RP(risultatiVotoXML,encodedSignRP,publicKeyRP);
+            if(verifica == 0){
+                //this->parsingRisultatiVoto(risultatiVotoXML);
+            }
+
+
+        }
+        else{
+            //emit risultatiNonRicevuti();
+        }
+
+    }
+    else{
+        cerr << "collegamento con l'urna non riuscito" << endl;
+        emit urnaNonRaggiungibile();
+    }
 }
 
 string UserAgentRP::getPassword() const
@@ -221,4 +242,51 @@ string UserAgentRP::getPublicKeyRP() const
 void UserAgentRP::setPublicKeyRP(const string &value)
 {
     publicKeyRP = value;
+}
+
+int UserAgentRP::verifySignString_RP(string data, string encodedSignature,
+                                     string encodedPublicKey) {
+
+    int success = 1; //non verificato
+    string signature;
+    StringSource(encodedSignature,true,
+                 new HexDecoder(
+                     new StringSink(signature)
+                     )//HexDecoder
+                 );//StringSource
+    cout << "Signature encoded: " << encodedSignature << endl;
+    cout << "Signature decoded: " << signature << endl;
+
+    string decodedPublicKey;
+    StringSource(encodedPublicKey,true,
+                 new HexDecoder(
+                     new StringSink(decodedPublicKey)
+                     )//HexDecoder
+                 );//StringSource
+
+    ////------ verifica signature
+    StringSource ss(decodedPublicKey,true /*pumpAll*/);
+    CryptoPP::RSA::PublicKey publicKey;
+    publicKey.Load(ss);
+
+    cout << "PublicKey encoded: " << encodedPublicKey << endl;
+    ////////////////////////////////////////////////
+    try{
+        // Verify and Recover
+        CryptoPP::RSASS<CryptoPP::PSS, CryptoPP::SHA256>::Verifier verifier(publicKey);
+        cout << "Data to sign|signature: " << data + signature << endl;
+        StringSource(data + signature, true,
+                     new SignatureVerificationFilter(verifier, NULL,
+                                                     SignatureVerificationFilter::THROW_EXCEPTION) // SignatureVerificationFilter
+                     );// StringSource
+
+        cout << "Verified signature on message" << endl;
+        success = 0; //verificato
+    } // try
+
+    catch (CryptoPP::Exception& e) {
+        cerr << "Error: " << e.what() << endl;
+        success = 1;
+    }
+    return success;
 }

@@ -270,3 +270,8 @@ void MainWindowRP::on_pushButton_logout_clicked()
     cout << "Logout" << endl;
     ui->stackedWidget->setCurrentIndex(InterfacceRP::login);
 }
+
+void MainWindowRP::on_pushButton_visualizzaRisultati_clicked()
+{
+    emit needRisultatiVoto(idProceduraSelezionata);
+}

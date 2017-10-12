@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1037</width>
-    <height>607</height>
+    <width>1080</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -62,7 +62,7 @@ background-color: rgb(49, 149, 255);
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_login">
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -153,11 +153,62 @@ background-color: rgb(49, 149, 255);
       <widget class="QWidget" name="page_visualizzaProcedurePersonali">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0">
+         <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0">
           <property name="verticalSpacing">
            <number>25</number>
           </property>
+          <item row="1" column="0">
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QTableWidget" name="tableWidget_vistaProcedure">
+            <property name="columnCount">
+             <number>6</number>
+            </property>
+            <column/>
+            <column/>
+            <column/>
+            <column/>
+            <column/>
+            <column/>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_titleProcedure">
+            <property name="text">
+             <string>PROCEDURE</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
           <item row="3" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="spacing">
+             <number>50</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="pushButton_avviaScrutinio">
+              <property name="text">
+               <string>Avvia Scrutinio</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_visualizzaRisultati">
+              <property name="text">
+               <string>Visualizza Risultati Votazione</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="6" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
              <spacer name="horizontalSpacer">
@@ -200,48 +251,11 @@ background-color: rgb(49, 149, 255);
             </item>
            </layout>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_titleProcedure">
-            <property name="text">
-             <string>PROCEDURE</string>
+          <item row="4" column="0">
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="spacing">
-             <number>50</number>
-            </property>
-            <item>
-             <widget class="QPushButton" name="pushButton_avviaScrutinio">
-              <property name="text">
-               <string>Avvia Scrutinio</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_visualizzaRisultati">
-              <property name="text">
-               <string>Visualizza Risultati Votazione</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0">
-           <widget class="QTableWidget" name="tableWidget_vistaProcedure">
-            <property name="columnCount">
-             <number>6</number>
-            </property>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
            </widget>
           </item>
          </layout>
@@ -334,7 +348,6 @@ background-color: rgb(49, 149, 255);
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

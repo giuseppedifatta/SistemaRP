@@ -57,6 +57,7 @@ private slots:
 
     void on_pushButton_avviaScrutinio_clicked();
     void on_pushButton_logout_clicked();
+    void on_pushButton_visualizzaRisultati_clicked();
 };
 
 #endif // MAINWINDOWRP_H

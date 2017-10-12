@@ -10,13 +10,15 @@
 #include <mutex>
 
 #include <cryptopp/pwdbased.h>
-#include "cryptopp/hex.h"
-#include "cryptopp/filters.h"
-#include "cryptopp/secblock.h"
-#include "cryptopp/hmac.h"
-#include "cryptopp/sha.h"
-#include "cryptopp/aes.h"
-#include "tinyxml2.h"
+#include <cryptopp/hex.h>
+#include <cryptopp/filters.h>
+#include <cryptopp/secblock.h>
+#include <cryptopp/hmac.h>
+#include <cryptopp/sha.h>
+#include <cryptopp/aes.h>
+#include <cryptopp/rsa.h>
+#include <cryptopp/pssr.h>
+#include <tinyxml2.h>
 
 #include "sslclient.h"
 #include "proceduravoto.h"
@@ -74,6 +76,7 @@ private:
     vector <ProceduraVoto> parsingProcedure(string xmlFileProcedure);
 
 
+    int verifySignString_RP(string data, string encodedSignature, string encodedPublicKey);
 signals:
     void autenticazione_riuscita(vector <ProceduraVoto>);
     void errorCredenziali();
