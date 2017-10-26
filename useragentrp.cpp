@@ -1,6 +1,6 @@
 #include "useragentrp.h"
 
-UserAgentRP::UserAgentRP(QObject *parent) : QObject(parent)
+UserAgentRP::UserAgentRP(QObject *parent) : QThread(parent)
 {
     ipUrna = "192.168.19.134";
 }
@@ -242,6 +242,11 @@ string UserAgentRP::getPublicKeyRP() const
 void UserAgentRP::setPublicKeyRP(const string &value)
 {
     publicKeyRP = value;
+}
+
+void UserAgentRP::run()
+{
+
 }
 
 int UserAgentRP::verifySignString_RP(string data, string encodedSignature,

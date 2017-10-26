@@ -16,12 +16,20 @@ SOURCES += main.cpp\
         mainwindowrp.cpp \
     useragentrp.cpp \
     sslclient.cpp \
-    proceduravoto.cpp
+    proceduravoto.cpp \
+    candidato.cpp \
+    listaelettorale.cpp \
+    risultatiSeggio.cpp \
+    schedavoto.cpp
 
 HEADERS  += mainwindowrp.h \
     useragentrp.h \
     sslclient.h \
-    proceduravoto.h
+    proceduravoto.h \
+    candidato.h \
+    listaelettorale.h \
+    risultatiSeggio.h \
+    schedavoto.h
 
 FORMS    += mainwindowrp.ui
 
@@ -49,3 +57,5 @@ DEPENDPATH += $$PWD/../../../../usr/lib/i386-linux-gnu
 
 INCLUDEPATH += $$PWD/../../../../usr/include/cryptopp
 DEPENDPATH += $$PWD/../../../../usr/include/cryptopp
+
+DISTFILES +=

@@ -2,6 +2,7 @@
 #define USERAGENTRP_H
 
 #include <QtCore>
+#include <QThread>
 
 
 #include <string>
@@ -27,8 +28,7 @@ using namespace std;
 using namespace CryptoPP;
 using namespace tinyxml2;
 
-class UserAgentRP : public QObject
-{
+class UserAgentRP : public QThread{
     Q_OBJECT
 public:
     mutex mutex_stdout;
@@ -62,6 +62,7 @@ public:
     void setPublicKeyRP(const string &value);
 
 private:
+    void run();
     //dati membro
     const char * ipUrna;
     string userid;

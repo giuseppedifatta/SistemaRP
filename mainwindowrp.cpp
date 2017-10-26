@@ -275,3 +275,137 @@ void MainWindowRP::on_pushButton_visualizzaRisultati_clicked()
 {
     emit needRisultatiVoto(idProceduraSelezionata);
 }
+
+void MainWindowRP::initTableRV(){
+    ui->tableWidget_risultatiVoto->verticalHeader()->setVisible(false);
+    ui->tableWidget_risultatiVoto->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget_risultatiVoto->setSelectionMode(QAbstractItemView::NoSelection);
+    QStringList tableHeaders;
+    tableHeaders << "id Seggio" << "Candidato" << "Data di nascita" << "Luogo di Nascita " << "Voti Ricevuti" << "Lista" ;
+
+    ui->tableWidget_risultatiVoto->setColumnCount(6);
+    ui->tableWidget_risultatiVoto->setHorizontalHeaderLabels(tableHeaders);
+    //ui->tableWidget_lista_procedure->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidget_risultatiVoto->resizeColumnsToContents();
+    ui->tableWidget_risultatiVoto->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    //    ui->tableWidget_risultatiVoto->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
+    //    ui->tableWidget_risultatiVoto->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
+    QFont font = ui->tableWidget_risultatiVoto->horizontalHeader()->font();
+    font.setPointSize(18);
+    font.setBold(true);
+    ui->tableWidget_risultatiVoto->horizontalHeader()->setFont( font );
+
+}
+
+//void MainWindowRP::on_pushButton_schedaSuccessiva_clicked()
+//{
+//    RisultatiSeggio rs = risultatiSeggioOttenuti.at(0);
+//    uint numSchede = rs.getSchedeVotoRisultato().size();
+//    uint indexSchedaRisultatoMostrata = indexSchedaRisultatoDaMostrare;
+//    if(indexSchedaRisultatoMostrata < (numSchede-1) ){
+//        indexSchedaRisultatoDaMostrare++;
+//    }
+//    else{ //visualizziamo di nuovo la prima scheda
+//        indexSchedaRisultatoDaMostrare = 0;
+//    }
+//    showSchedaRisultato(indexSchedaRisultatoDaMostrare, risultatiSeggioOttenuti);
+//}
+
+//void MainWindowRP::showRisultatiProcedura(vector<RisultatiSeggio> risultatiSeggi)
+//{
+//    risultatiSeggioOttenuti = risultatiSeggi;
+//    initTableRV();
+
+
+//    indexSchedaRisultatoDaMostrare = 0;
+//    RisultatiSeggio rs = risultatiSeggioOttenuti.at(0);
+//    uint numSchede = rs.getSchedeVotoRisultato().size();
+//    if(numSchede > 1 ){
+//        ui->pushButton_schedaSuccessiva->setEnabled(true);
+//    }
+//    showSchedaRisultato(indexSchedaRisultatoDaMostrare, risultatiSeggioOttenuti);
+//}
+
+//void MainWindowRP::showSchedaRisultato(uint indexScheda, vector <RisultatiSeggio> &risultatiSeggi){
+//    ui->tableWidget_risultatiVoto->model()->removeRows(0,ui->tableWidget_risultatiVoto->rowCount());
+
+//    uint numRow, indexNewRow, addedRow;
+//    numRow = ui->tableWidget_risultatiVoto->rowCount();
+//    indexNewRow = numRow-1;
+
+//    QFont serifFontSeggio("Times", 20, QFont::Bold);
+//    QFont serifFontCandidato("Times", 14, QFont::Bold);
+
+//    for (uint s = 0; s <risultatiSeggi.size(); s++){
+//        ui->tableWidget_risultatiVoto->insertRow(indexNewRow++);
+//        addedRow = ui->tableWidget_risultatiVoto->rowCount()-1;
+
+//        //ottengo i risultati del seggio
+//        RisultatiSeggio rs = risultatiSeggi.at(s);
+
+//        uint idSeggio = rs.getIdSeggio();
+//        QTableWidgetItem *itemIdSeggio;
+//        if(idSeggio != 0){
+//            itemIdSeggio  = new QTableWidgetItem("Seggio " + QString::number(idSeggio));
+//        }
+//        else{
+//            itemIdSeggio  = new QTableWidgetItem("Urna Virtuale");
+//        }
+//        itemIdSeggio->setFont(serifFontSeggio);
+//        itemIdSeggio->setTextColor(Qt::blue);
+//        ui->tableWidget_risultatiVoto->setItem(addedRow,SEGGIO,itemIdSeggio);
+
+
+//        //estraggo la scheda risultato da visualizzare
+//        SchedaVoto sv = rs.getSchedeVotoRisultato().at(indexScheda);
+//        vector <ListaElettorale> liste = sv.getListeElettorali();
+//        for (uint l = 0; l< liste.size(); l++){
+//            ListaElettorale lista = liste.at(l);
+//            vector <Candidato> candidati = lista.getCandidati();
+
+//            for (uint i = 0; i < candidati.size(); i++){
+//                ui->tableWidget_risultatiVoto->insertRow(indexNewRow++);
+//                addedRow = ui->tableWidget_risultatiVoto->rowCount()-1;
+
+//                QTableWidgetItem *item;
+//                QString nomeLista = QString::fromStdString(lista.getNome());
+//                if(nomeLista!="nessuna lista"){
+//                    //creazione item nome della lista di appartenenza del candidato
+//                    item = new QTableWidgetItem(nomeLista);
+//                    item->setFont(serifFontCandidato);
+//                    item->setTextColor(Qt::black);
+//                    ui->tableWidget_risultatiVoto->setItem(addedRow,LISTA,item);
+//                }
+
+//                Candidato c = candidati.at(i);
+
+//                string candidato = c.getNome() + " " +c.getCognome();
+//                item = new QTableWidgetItem(QString::fromStdString(candidato));
+//                item->setFont(serifFontCandidato);
+//                item->setTextColor(Qt::black);
+//                ui->tableWidget_risultatiVoto->setItem(addedRow,CANDIDATO,item);
+
+//                string luogo = c.getLuogoNascita();
+//                item = new QTableWidgetItem(QString::fromStdString(luogo));
+//                item->setFont(serifFontCandidato);
+//                item->setTextColor(Qt::black);
+//                ui->tableWidget_risultatiVoto->setItem(addedRow,LUOGO,item);
+
+//                string data = c.getDataNascita();
+//                item = new QTableWidgetItem(QString::fromStdString(data));
+//                item->setFont(serifFontCandidato);
+//                item->setTextColor(Qt::black);
+//                ui->tableWidget_risultatiVoto->setItem(addedRow,DATA,item);
+
+//                string numVoti = to_string(c.getNumVoti());
+//                item = new QTableWidgetItem(QString::fromStdString(numVoti));
+//                item->setFont(serifFontCandidato);
+//                item->setTextColor(Qt::black);
+//                ui->tableWidget_risultatiVoto->setItem(addedRow,NUM_VOTI,item);
+//            }
+//        }
+//    }
+//}
+
+

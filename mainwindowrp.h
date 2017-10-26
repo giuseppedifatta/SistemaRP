@@ -3,9 +3,14 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QtCore>
 #include "useragentrp.h"
+#include "risultatiSeggio.h"
+
 #include "proceduravoto.h"
+
 #include <vector>
+using namespace std;
 namespace Ui {
 class MainWindowRP;
 }
@@ -24,6 +29,14 @@ public:
         scrutinio,
         risultati
     };
+    enum columnRisultatiVoto{
+        SEGGIO,
+        CANDIDATO,
+        DATA,
+        LUOGO,
+        NUM_VOTI,
+        LISTA
+    };
 
 private:
     Ui::MainWindowRP *ui;
@@ -33,7 +46,12 @@ private:
     ProceduraVoto::statiProcedura statoProceduraSelezionata;
     QString descProceduraSelezionata;
 
+    vector <RisultatiSeggio> risultatiSeggioOttenuti;
+    uint indexSchedaRisultatoDaMostrare;
+
     void setTables();
+    void initTableRV();
+    void showSchedaRisultato(uint indexScheda, vector<RisultatiSeggio> &risultatiSeggi);
 signals:
     void attemptLogin(QString username,QString password);
     void startScrutinio(uint idProcedura);
@@ -47,17 +65,16 @@ public slots:
     void resizeProgressBar(uint dim);
     void showMessageScrutinioCompletato();
     void errorMessageScrutinio();
+ //   void showRisultatiProcedura(vector<RisultatiSeggio> risultatiSeggi);
 
 private slots:
     void on_pushButton_closeApp_clicked();
-
     void on_pushButton_doLogin_clicked();
-
     void on_tableWidget_vistaProcedure_cellClicked(int row, int column);
-
     void on_pushButton_avviaScrutinio_clicked();
     void on_pushButton_logout_clicked();
     void on_pushButton_visualizzaRisultati_clicked();
+//    void on_pushButton_schedaSuccessiva_clicked();
 };
 
 #endif // MAINWINDOWRP_H
