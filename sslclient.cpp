@@ -243,12 +243,16 @@ bool SSLClient::queryAutenticazioneRP(string username, string password, string &
     //invia username
     sendString_SSL(ssl,username);
 
+    //ricevi salt per generare hash della password
     string saltPassword;
     receiveString_SSL(ssl, saltPassword);
 
-    string passwordHash = this->userAgentChiamante->hashPassword(password,saltPassword);
-    //invia hash della password
-    sendString_SSL(ssl,passwordHash);
+    if(saltPassword !="0"){ //se il salt non è 0, calcolo e invio l'hash della password
+        string passwordHash = this->userAgentChiamante->hashPassword(password,saltPassword);
+        //invia hash della password
+        sendString_SSL(ssl,passwordHash);
+
+    }
 
     //ricevi esito autenticazione
     string str;
@@ -269,7 +273,8 @@ bool SSLClient::queryAutenticazioneRP(string username, string password, string &
         userAgentChiamante->setPublicKeyRP(publicKeyRP);
         return true;
     }
-    else return false;
+    else //non autenticato, non c'è altro da fare
+        return false;
 
 
 }

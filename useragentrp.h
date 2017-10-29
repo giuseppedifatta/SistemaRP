@@ -23,6 +23,7 @@
 
 #include "sslclient.h"
 #include "proceduravoto.h"
+#include "risultatiSeggio.h"
 
 using namespace std;
 using namespace CryptoPP;
@@ -47,7 +48,7 @@ public:
         undefined
     };
 
-    enum autenticato{
+    enum autenticato {
             authenticated,
             not_authenticated
         };
@@ -78,6 +79,7 @@ private:
 
 
     int verifySignString_RP(string data, string encodedSignature, string encodedPublicKey);
+    void parsingScrutinioXML(string &risultatiVotoXML, vector<RisultatiSeggio> *risultatiSeggi);
 signals:
     void autenticazione_riuscita(vector <ProceduraVoto>);
     void errorCredenziali();
@@ -86,6 +88,7 @@ signals:
     void schedeDaScrutinare(uint numeroSchede);
     void scrutinioOK();
     void erroreScrutinio();
+    void readyRisultatiSeggi(vector <RisultatiSeggio> risultatiSeggi);
 
 public slots:
     void login(QString username, QString password);

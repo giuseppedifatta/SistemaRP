@@ -65,7 +65,7 @@ public slots:
     void resizeProgressBar(uint dim);
     void showMessageScrutinioCompletato();
     void errorMessageScrutinio();
- //   void showRisultatiProcedura(vector<RisultatiSeggio> risultatiSeggi);
+    void showRisultatiProcedura(vector<RisultatiSeggio> risultatiSeggi);
 
 private slots:
     void on_pushButton_closeApp_clicked();
@@ -75,6 +75,8 @@ private slots:
     void on_pushButton_logout_clicked();
     void on_pushButton_visualizzaRisultati_clicked();
 //    void on_pushButton_schedaSuccessiva_clicked();
+    void on_pushButton_clicked();
+    void on_pushButton_schedaSuccessiva_clicked();
 };
 
 #endif // MAINWINDOWRP_H

@@ -2,7 +2,7 @@
 
 UserAgentRP::UserAgentRP(QObject *parent) : QThread(parent)
 {
-    ipUrna = "192.168.19.134";
+    ipUrna = "192.168.19.133";
 }
 
 string UserAgentRP::deriveKeyFromPass(string password,string salt)
@@ -161,15 +161,18 @@ void UserAgentRP::doScrutinio(uint idProceduraSelezionata)
 
 void UserAgentRP::visualizzaRisultatiVoto(uint idProceduraSelezionata)
 {
+    vector <RisultatiSeggio> risultatiSeggi;
+
     SSLClient * rp_client = new SSLClient(this);
     if(rp_client->connectTo(ipUrna)){
         string risultatiVotoXML,encodedSignRP;
         if(rp_client->queryRisultatiVoto(idProceduraSelezionata,risultatiVotoXML,encodedSignRP)){
 
             //verifica firma di RP sui risultatiRicevuti
-            int verifica = this->verifySignString_RP(risultatiVotoXML,encodedSignRP,publicKeyRP);
+            int verifica = this->verifySignString_RP(risultatiVotoXML+to_string(idProceduraSelezionata),encodedSignRP,publicKeyRP);
             if(verifica == 0){
-                //this->parsingRisultatiVoto(risultatiVotoXML);
+                this->parsingScrutinioXML(risultatiVotoXML, &risultatiSeggi);
+                emit readyRisultatiSeggi(risultatiSeggi);
             }
 
 
@@ -185,10 +188,167 @@ void UserAgentRP::visualizzaRisultatiVoto(uint idProceduraSelezionata)
     }
 }
 
+void UserAgentRP::parsingScrutinioXML(string &risultatiVotoXML, vector <RisultatiSeggio> *risultatiSeggi)
+{
+    XMLDocument xmlDoc;
+    xmlDoc.Parse(risultatiVotoXML.c_str());
+
+    //nodo Scrutinio
+    XMLNode *rootNode = xmlDoc.FirstChild();
+
+    XMLNode *risultatiNode = rootNode->FirstChild();
+
+    XMLElement * risultatoElement = risultatiNode->FirstChildElement("risultatoSeggio");
+    bool oneMoreRisultatoElement = true;
+    while(oneMoreRisultatoElement){
+        oneMoreRisultatoElement = false;
+        RisultatiSeggio rs;
+
+        XMLText * textNodeIdSeggio = risultatoElement->FirstChildElement("idSeggio")->FirstChild()->ToText();
+        uint idSeggio = atoi(textNodeIdSeggio->Value());
+        cout << "Risultati seggio " << idSeggio << endl;
+        rs.setIdSeggio(idSeggio);
+
+        XMLElement *schedeElement = risultatoElement->FirstChildElement("schede");
+
+        XMLElement *schedaRisultatoElement = schedeElement->FirstChildElement("schedaRisultato");
+        bool oneMoreSchedaRisultato = true;
+        vector <SchedaVoto> * schedeRisultato = rs.getPointerSchedeVotoRisultato();
+        while(oneMoreSchedaRisultato){
+            oneMoreSchedaRisultato = false;
+            SchedaVoto svr;
+
+            XMLText * textNodeIdScheda = schedaRisultatoElement->FirstChildElement("id")->FirstChild()->ToText();
+            uint id = atoi(textNodeIdScheda->Value());
+            svr.setId(id);
+
+            XMLText * textNodeDesc = schedaRisultatoElement->FirstChildElement("descrizioneElezione")->FirstChild()->ToText();
+            string descrizioneElezione = textNodeDesc->Value();
+            svr.setDescrizioneElezione(descrizioneElezione);
+
+            cout << "scheda " << id << ": " << descrizioneElezione <<  endl;
+
+            XMLElement * listeElement = schedaRisultatoElement->FirstChildElement("liste");
+
+            XMLElement * firstListaElement = listeElement->FirstChildElement("lista");
+            XMLElement * lastListaElement = listeElement->LastChildElement("lista");
+
+            XMLElement *listaElement = firstListaElement;
+            bool lastLista = false;
+            do{
+
+                int idLista = listaElement->IntAttribute("id");
+                cout << "PV:  --- lista trovata" << endl;
+                cout << "PV: id Lista: " << idLista << endl;
+                string nomeLista = listaElement->Attribute("nome");
+                cout << "PV: nome: " << nomeLista << endl;
+
+                XMLElement * firstCandidatoElement  = listaElement->FirstChildElement("candidato");
+                XMLElement * lastCandidatoElement = listaElement->LastChildElement("candidato");
+
+                XMLElement * candidatoElement = firstCandidatoElement;
+                //ottengo tutti i candidati della lista
+                bool lastCandidato = false;
+                do{
+
+                    XMLElement * matricolaElement = candidatoElement->FirstChildElement("matricola");
+                    XMLNode * matricolaInnerNode = matricolaElement->FirstChild();
+                    string matricola;
+                    if(matricolaInnerNode!=nullptr){
+                        matricola = matricolaInnerNode->ToText()->Value();
+                    }
+
+                    int numVoti = candidatoElement->IntAttribute("votiRicevuti");
+                    //cout << matricola << endl;
+
+                    XMLElement *nomeElement = matricolaElement->NextSiblingElement("nome");
+                    XMLNode * nomeInnerNode = nomeElement->FirstChild();
+                    string nome;
+                    if(nomeInnerNode!=nullptr){
+                        nome = nomeInnerNode->ToText()->Value();
+                    }
+                    //cout << nome << endl;
+
+                    XMLElement *cognomeElement = nomeElement->NextSiblingElement("cognome");
+                    XMLNode * cognomeInnerNode = cognomeElement->FirstChild();
+                    string cognome;
+                    if(cognomeInnerNode!=nullptr){
+                        cognome = cognomeInnerNode->ToText()->Value();
+                    }
+                    //cout << cognome << endl;
+
+                    XMLElement *luogoNascitaElement = cognomeElement->NextSiblingElement("luogoNascita");
+                    XMLNode * luogoNascitaInnerNode = luogoNascitaElement->FirstChild();
+                    string luogoNascita;
+                    if(luogoNascitaInnerNode!=nullptr){
+                        luogoNascita = luogoNascitaInnerNode->ToText()->Value();
+                    }
+                    //cout << luogoNascita << endl;
+
+                    XMLElement *dataNascitaElement = luogoNascitaElement->NextSiblingElement("dataNascita");
+                    XMLNode * dataNascitaInnerNode = dataNascitaElement->FirstChild();
+                    string dataNascita;
+                    if(dataNascitaInnerNode!=nullptr){
+                        dataNascita = dataNascitaInnerNode->ToText()->Value();
+                    }
+                    //cout << dataNascita << endl;
+
+                    cout << "PV: Estratti i dati del candidato id " << id;
+                    //creo il candidato
+                    cout << ": " << matricola << ", "<< nome << " " << cognome << ", " << luogoNascita << ", " << dataNascita << " ->" << numVoti << " voti." << endl;
+                    Candidato c(nome,nomeLista,cognome,dataNascita,luogoNascita,matricola,numVoti);
+
+                    svr.addCandidato(c);
+
+                    //accesso al successivo candidato
+                    if(candidatoElement == lastCandidatoElement){
+                        lastCandidato = true;
+                    }else {
+                        candidatoElement = candidatoElement->NextSiblingElement("candidato");
+                        cout << "PV: ottengo il puntatore al successivo candidato" << endl;
+                    }
+                }while(!lastCandidato);
+
+                cout << "PV: non ci sono altri candidati nella lista: " << nomeLista << endl;
+
+
+                if(listaElement == lastListaElement){
+                    lastLista = true;
+                }
+                else{
+                    //accediamo alla successiva lista nella scheda di voto
+                    listaElement = listaElement->NextSiblingElement("lista");
+                    cout << "PV: ottengo il puntatore alla successiva lista" << endl;
+                }
+            }while(!lastLista);
+            cout << "PV: non ci sono altre liste" << endl;
+
+
+            schedeRisultato->push_back(svr);
+
+            if(schedaRisultatoElement->NextSiblingElement("schedaRisultato")!=nullptr){
+                schedaRisultatoElement = schedaRisultatoElement->NextSiblingElement("schedaRisultato");
+                oneMoreSchedaRisultato = true;
+            }
+        }
+
+        risultatiSeggi->push_back(rs);
+
+        if(risultatoElement->NextSiblingElement("risultatoSeggio")!=nullptr){
+            risultatoElement = risultatoElement->NextSiblingElement("risultatoSeggio");
+            oneMoreRisultatoElement = true;
+        }
+    }
+}
+
+
 string UserAgentRP::getPassword() const
 {
     return password;
 }
+
+
+
 
 void UserAgentRP::setPassword(const string &value)
 {
