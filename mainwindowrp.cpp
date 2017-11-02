@@ -7,6 +7,11 @@ MainWindowRP::MainWindowRP(QWidget *parent) :
     ui(new Ui::MainWindowRP)
 {
     ui->setupUi(this);
+
+    setWindowFlags(Qt::FramelessWindowHint);
+
+    setWindowTitle("Voto digitale UNIPA");
+
     userAgent = new UserAgentRP(this);
     ui->stackedWidget->setCurrentIndex(InterfacceRP::login);
     ui->lineEdit_password->setEchoMode(QLineEdit::Password);
@@ -182,6 +187,9 @@ void MainWindowRP::showRisultatiProcedura(vector<RisultatiSeggio> risultatiSeggi
     if(numSchede > 1 ){
         ui->pushButton_schedaSuccessiva->setEnabled(true);
     }
+    else{
+        ui->pushButton_schedaSuccessiva->setEnabled(false);
+    }
     showSchedaRisultato(indexSchedaRisultatoDaMostrare, risultatiSeggioOttenuti);
 }
 
@@ -326,7 +334,7 @@ void MainWindowRP::showSchedaRisultato(uint indexScheda, vector <RisultatiSeggio
         indexNewRow = ui->tableWidget_risultatiVoto->rowCount();
         ui->tableWidget_risultatiVoto->insertRow(indexNewRow);
         addedRow = ui->tableWidget_risultatiVoto->rowCount()-1;
-        cout << "Riga aggiunta index: " << addedRow << endl;
+        //cout << "Riga aggiunta index: " << addedRow << endl;
         //ottengo i risultati del seggio
         RisultatiSeggio rs = risultatiSeggi.at(s);
 
@@ -334,9 +342,11 @@ void MainWindowRP::showSchedaRisultato(uint indexScheda, vector <RisultatiSeggio
         QTableWidgetItem *itemIdSeggio;
         if(idSeggio != 0){
             itemIdSeggio  = new QTableWidgetItem("Seggio " + QString::number(idSeggio));
+            cout << "Visualizzazione risultati seggio: " << idSeggio << endl;
         }
         else{
             itemIdSeggio  = new QTableWidgetItem("Urna Virtuale");
+            cout << "Visualizzazione risultati Urna Virtuale Centrale" << endl;
         }
         itemIdSeggio->setFont(serifFontSeggio);
         itemIdSeggio->setTextColor(Qt::blue);
@@ -354,7 +364,7 @@ void MainWindowRP::showSchedaRisultato(uint indexScheda, vector <RisultatiSeggio
                 indexNewRow = ui->tableWidget_risultatiVoto->rowCount();
                 ui->tableWidget_risultatiVoto->insertRow(indexNewRow);
                 addedRow = ui->tableWidget_risultatiVoto->rowCount()-1;
-                cout << "Riga aggiunta index: " << addedRow << endl;
+                //cout << "Riga aggiunta index: " << addedRow << endl;
                 QTableWidgetItem *item;
                 QString nomeLista = QString::fromStdString(lista.getNome());
                 if(nomeLista!="nessuna lista"){
@@ -412,10 +422,6 @@ void MainWindowRP::on_pushButton_schedaSuccessiva_clicked()
     }
     showSchedaRisultato(indexSchedaRisultatoDaMostrare, risultatiSeggioOttenuti);
 }
-
-
-
-
 
 void MainWindowRP::on_pushButton_clicked()
 {
