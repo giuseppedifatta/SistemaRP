@@ -30,7 +30,7 @@ private:
     void init_openssl_library();
     void cleanup_openssl();
     void createClientContext();
-    void configure_context(char* CertFile, char* KeyFile, char * ChainFile);
+    void configure_context(const char *CertFile, const char *KeyFile, const char *ChainFile);
     int create_socket(const char * port);
 
     //elaborazione certificati

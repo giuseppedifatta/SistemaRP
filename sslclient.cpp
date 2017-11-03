@@ -1,5 +1,5 @@
 #include "sslclient.h"
-
+#include "conf.h"
 /*
  * sslClient.h
  *
@@ -19,8 +19,8 @@
 #include <sstream>
 using namespace std;
 
-#define SERVER_PORT "4433"
-#define LOCALHOST "127.0.0.1"
+#define SERVER_PORT "4433" //questa porta è quella su cui il sistema Urna offre il servizio
+#define LOCALHOST "127.0.0.1" //non utilizzata
 
 SSLClient::SSLClient(UserAgentRP * userAgentRP){
     //this->hostname = IP_PV;
@@ -39,10 +39,9 @@ SSLClient::SSLClient(UserAgentRP * userAgentRP){
 
     createClientContext();
 
-    char certFile[] = "/home/giuseppe/myCA/intermediate/certs/client.cert.pem";
-    char keyFile[] = "/home/giuseppe/myCA/intermediate/private/client.key.pem";
-    char chainFile[] =
-            "/home/giuseppe/myCA/intermediate/certs/ca-chain.cert.pem";
+    const char *certFile = getConfig("clientCertPem").c_str();
+    const char *keyFile = getConfig("clientKeyPem").c_str();
+    const char *chainFile = getConfig("chainFilePem").c_str();
 
     this->configure_context(certFile, keyFile, chainFile);
     userAgentChiamante->mutex_stdout.lock();
@@ -401,10 +400,9 @@ void SSLClient::verify_ServerCert(/*const char * hostIPhostname*/) {
     X509_NAME *certsubject = NULL;
     X509_STORE *store = NULL;
     X509_STORE_CTX *vrfy_ctx = NULL;
-    //X509_NAME *certname = NULL;
+
     int ret;
-    //BIO *certbio = NULL;
-    //certbio = BIO_new(BIO_s_file());
+
 
 
     // Get the remote certificate into the X509 structure
@@ -449,8 +447,7 @@ void SSLClient::verify_ServerCert(/*const char * hostIPhostname*/) {
          if (!(cert = PEM_read_bio_X509(certbio, NULL, 0, NULL)))
          BIO_printf(this->outbio, "ClientSeggio: Error loading cert into memory\n");
          */
-    char chainFile[] =
-            "/home/giuseppe/myCA/intermediate/certs/ca-chain.cert.pem";
+    const char * chainFile = getConfig("chainFilePem").c_str();
 
     ret = X509_STORE_load_locations(store, chainFile, NULL);
     if (ret != 1){
@@ -543,12 +540,12 @@ void SSLClient::createClientContext(){
     SSL_CTX_set_options(this->ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3);
 }
 
-void SSLClient::configure_context(char* CertFile, char* KeyFile, char * ChainFile) {
+void SSLClient::configure_context(const char* CertFile, const char* KeyFile, const char * ChainFile) {
     SSL_CTX_set_ecdh_auto(this->ctx, 1);
 
     //---il chainfile dovrà essere ricevuto dal peer che si connette? non so se è necessario su entrambi i peer----
     SSL_CTX_load_verify_locations(this->ctx,ChainFile, NULL);
-    //SSL_CTX_use_certificate_chain_file(ctx,"/home/giuseppe/myCA/intermediate/certs/ca-chain.cert.pem");
+
     /*The final step of configuring the context is to specify the certificate and private key to use.*/
     /* Set the key and cert */
     if (SSL_CTX_use_certificate_file(this->ctx, CertFile, SSL_FILETYPE_PEM) < 0) {

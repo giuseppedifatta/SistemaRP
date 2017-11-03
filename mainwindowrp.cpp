@@ -86,11 +86,6 @@ void MainWindowRP::showProcedureRP(vector<ProceduraVoto> pv)
         item->setTextColor(Qt::black);
         ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,2,item);
 
-        //        uint idRP = pv.at(row).getIdRP();
-        //        item = new QTableWidgetItem(QString::number(idRP));
-        //        item->setTextAlignment(Qt::AlignCenter);
-        //        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,3,item);
-
         QString qsInizio = QString::fromStdString(pv.at(row).getData_ora_inizio());
         item = new QTableWidgetItem(qsInizio);
         item->setTextAlignment(Qt::AlignCenter);
@@ -104,16 +99,6 @@ void MainWindowRP::showProcedureRP(vector<ProceduraVoto> pv)
         item->setFlags(Qt::NoItemFlags);
         item->setTextColor(Qt::black);
         ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,4,item);
-
-        //        uint numSchede = pv.at(row).getNumSchedeVoto();
-        //        item = new QTableWidgetItem(QString::number(numSchede));
-        //        item->setTextAlignment(Qt::AlignCenter);
-        //        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,6,item);
-
-        //        uint schedeInserite = pv.at(row).getSchedeInserite();
-        //        item = new QTableWidgetItem(QString::number(schedeInserite));
-        //        item->setTextAlignment(Qt::AlignCenter);
-        //        ui->tableWidget_vistaProcedure->setItem(rigaAggiunta,7,item);
 
         ProceduraVoto::statiProcedura statoProcedura = pv.at(row).getStato();
         QString stato = QString::fromStdString(ProceduraVoto::getStatoAsString(statoProcedura));

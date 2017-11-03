@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     candidato.cpp \
     listaelettorale.cpp \
     risultatiSeggio.cpp \
-    schedavoto.cpp
+    schedavoto.cpp \
+    conf.cpp
 
 HEADERS  += mainwindowrp.h \
     useragentrp.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindowrp.h \
     candidato.h \
     listaelettorale.h \
     risultatiSeggio.h \
-    schedavoto.h
+    schedavoto.h \
+    conf.h
 
 FORMS    += mainwindowrp.ui
 

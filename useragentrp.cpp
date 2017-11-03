@@ -1,8 +1,10 @@
 #include "useragentrp.h"
+#include "conf.h"
+
 
 UserAgentRP::UserAgentRP(QObject *parent) : QThread(parent)
 {
-    ipUrna = "192.168.19.133";
+    ipUrna = getConfig("ipUrna").c_str(); //da file di configurazione .config.rp
 }
 
 string UserAgentRP::deriveKeyFromPass(string password,string salt)
