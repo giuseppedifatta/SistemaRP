@@ -65,7 +65,7 @@ public:
 private:
     void run();
     //dati membro
-    const char * ipUrna;
+    string ipUrna;
     string userid;
     string password;
     string saltScrutinio;
@@ -91,7 +91,7 @@ signals:
     void readyRisultatiSeggi(vector <RisultatiSeggio> risultatiSeggi);
 
 public slots:
-    void login(QString username, QString password);
+    void doLogin(QString username, QString password);
     void doScrutinio(uint idProceduraSelezionata);
     void visualizzaRisultatiVoto(uint idProceduraSelezionata);
 };

@@ -19,7 +19,7 @@ MainWindowRP::MainWindowRP(QWidget *parent) :
 
     qRegisterMetaType< vector<ProceduraVoto> >( "vector<ProceduraVoto>" );
     qRegisterMetaType<vector<RisultatiSeggio>>("vector<RisultatiSeggio>");
-    QObject::connect(this,SIGNAL(attemptLogin(QString,QString)),userAgent,SLOT(login(QString,QString)));
+    QObject::connect(this,SIGNAL(attemptLogin(QString,QString)),userAgent,SLOT(doLogin(QString,QString)));
     QObject::connect(this,SIGNAL(startScrutinio(uint)),userAgent,SLOT(doScrutinio(uint)));
     QObject::connect(this,SIGNAL(needRisultatiVoto(uint)),userAgent,SLOT(visualizzaRisultatiVoto(uint)));
     QObject::connect(userAgent,SIGNAL(readyRisultatiSeggi(vector<RisultatiSeggio>)),this,SLOT(showRisultatiProcedura(vector<RisultatiSeggio>)));

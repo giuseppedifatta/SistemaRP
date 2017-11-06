@@ -4,7 +4,7 @@
 
 UserAgentRP::UserAgentRP(QObject *parent) : QThread(parent)
 {
-    ipUrna = getConfig("ipUrna").c_str(); //da file di configurazione .config.rp
+    ipUrna =  getConfig("ipUrna"); //da file di configurazione .config.rp
 }
 
 string UserAgentRP::deriveKeyFromPass(string password,string salt)
@@ -111,10 +111,12 @@ vector<ProceduraVoto> UserAgentRP::parsingProcedure(string xmlFileProcedure)
     return procedure;
 }
 
-void UserAgentRP::login(QString username, QString password)
+void UserAgentRP::doLogin(QString username, QString password)
 {
     SSLClient * rp_client = new SSLClient(this);
-    if(rp_client->connectTo(ipUrna)){
+//    string s =  getConfig("ipUrna");
+//    ipUrna = s.c_str();
+    if(rp_client->connectTo(ipUrna.c_str())){
         string xmlFileProcedure;
         string saltScrutinio;
         if(rp_client->queryAutenticazioneRP(username.toStdString(),password.toStdString(),xmlFileProcedure,saltScrutinio)){
@@ -142,7 +144,7 @@ void UserAgentRP::doScrutinio(uint idProceduraSelezionata)
 {
     string derivedKey = deriveKeyFromPass(password,saltScrutinio);
     SSLClient * rp_client = new SSLClient(this);
-    if(rp_client->connectTo(ipUrna)){
+    if(rp_client->connectTo(ipUrna.c_str())){
         string xmlProcedureAggiornate;
         if(rp_client->queryScrutinio(idProceduraSelezionata,derivedKey, xmlProcedureAggiornate)){
             emit scrutinioOK();
@@ -166,7 +168,7 @@ void UserAgentRP::visualizzaRisultatiVoto(uint idProceduraSelezionata)
     vector <RisultatiSeggio> risultatiSeggi;
 
     SSLClient * rp_client = new SSLClient(this);
-    if(rp_client->connectTo(ipUrna)){
+    if(rp_client->connectTo(ipUrna.c_str())){
         string risultatiVotoXML,encodedSignRP;
         if(rp_client->queryRisultatiVoto(idProceduraSelezionata,risultatiVotoXML,encodedSignRP)){
 
