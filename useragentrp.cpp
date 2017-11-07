@@ -114,8 +114,7 @@ vector<ProceduraVoto> UserAgentRP::parsingProcedure(string xmlFileProcedure)
 void UserAgentRP::doLogin(QString username, QString password)
 {
     SSLClient * rp_client = new SSLClient(this);
-//    string s =  getConfig("ipUrna");
-//    ipUrna = s.c_str();
+
     if(rp_client->connectTo(ipUrna.c_str())){
         string xmlFileProcedure;
         string saltScrutinio;
@@ -140,8 +139,7 @@ void UserAgentRP::doLogin(QString username, QString password)
     delete rp_client;
 }
 
-void UserAgentRP::doScrutinio(uint idProceduraSelezionata)
-{
+void UserAgentRP::doScrutinio(){
     string derivedKey = deriveKeyFromPass(password,saltScrutinio);
     SSLClient * rp_client = new SSLClient(this);
     if(rp_client->connectTo(ipUrna.c_str())){
@@ -154,7 +152,6 @@ void UserAgentRP::doScrutinio(uint idProceduraSelezionata)
         else{
             emit erroreScrutinio();
         }
-
     }
     else{
         cerr << "collegamento con l'urna non riuscito" << endl;
@@ -178,7 +175,6 @@ void UserAgentRP::visualizzaRisultatiVoto(uint idProceduraSelezionata)
                 this->parsingScrutinioXML(risultatiVotoXML, &risultatiSeggi);
                 emit readyRisultatiSeggi(risultatiSeggi);
             }
-
 
         }
         else{
@@ -359,11 +355,6 @@ void UserAgentRP::setPassword(const string &value)
     password = value;
 }
 
-void UserAgentRP::oneMoreVoteScrutinato()
-{
-    emit oneMore();
-}
-
 void UserAgentRP::totaleSchede(uint numeroSchede)
 {
     emit schedeDaScrutinare(numeroSchede);
@@ -388,8 +379,6 @@ string UserAgentRP::hashPassword( string plainPass, string salt){
 
     pbkdf.DeriveKey(result, result.size(),0x00,(byte *) plainPass.data(), plainPass.size(),(byte *) salt.data(), salt.size(),iterations);
 
-    //ArraySource resultEncoder(result,result.size(), true, new HexEncoder(new StringSink(hexResult)));
-
     HexEncoder hex(new StringSink(hexResult));
     hex.Put(result.data(), result.size());
     hex.MessageEnd();
@@ -408,9 +397,19 @@ void UserAgentRP::setPublicKeyRP(const string &value)
     publicKeyRP = value;
 }
 
+uint UserAgentRP::getIdProceduraSelezionata() const
+{
+    return idProceduraSelezionata;
+}
+
+void UserAgentRP::setIdProceduraSelezionata(const uint &value)
+{
+    idProceduraSelezionata = value;
+}
+
 void UserAgentRP::run()
 {
-
+    doScrutinio();
 }
 
 int UserAgentRP::verifySignString_RP(string data, string encodedSignature,

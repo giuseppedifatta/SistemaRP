@@ -20,16 +20,15 @@ MainWindowRP::MainWindowRP(QWidget *parent) :
     qRegisterMetaType< vector<ProceduraVoto> >( "vector<ProceduraVoto>" );
     qRegisterMetaType<vector<RisultatiSeggio>>("vector<RisultatiSeggio>");
     QObject::connect(this,SIGNAL(attemptLogin(QString,QString)),userAgent,SLOT(doLogin(QString,QString)));
-    QObject::connect(this,SIGNAL(startScrutinio(uint)),userAgent,SLOT(doScrutinio(uint)));
     QObject::connect(this,SIGNAL(needRisultatiVoto(uint)),userAgent,SLOT(visualizzaRisultatiVoto(uint)));
     QObject::connect(userAgent,SIGNAL(readyRisultatiSeggi(vector<RisultatiSeggio>)),this,SLOT(showRisultatiProcedura(vector<RisultatiSeggio>)));
     QObject::connect(userAgent,SIGNAL(autenticazione_riuscita(vector<ProceduraVoto>)),this,SLOT(showProcedureRP(vector<ProceduraVoto>)));
     QObject::connect(userAgent,SIGNAL(urnaNonRaggiungibile()),this,SLOT(messageUrnaUnreachable()));
     QObject::connect(userAgent,SIGNAL(errorCredenziali()),this,SLOT(messageWrongCredentials()));
-    QObject::connect(userAgent,SIGNAL(oneMore()),this,SLOT(incrementProgressBar()));
-    QObject::connect(userAgent,SIGNAL(schedeDaScrutinare(uint)),SLOT(resizeProgressBar(uint)));
+    QObject::connect(userAgent,SIGNAL(schedeDaScrutinare(uint)),SLOT(waitScrutinio(uint)));
     QObject::connect(userAgent,SIGNAL(erroreScrutinio()),this,SLOT(errorMessageScrutinio()));
     QObject::connect(userAgent,SIGNAL(scrutinioOK()),this,SLOT(showMessageScrutinioCompletato()));
+    QObject::connect(this,SIGNAL(idProceduraSelected(uint)),userAgent,SLOT(setIdProceduraSelezionata(uint)));
 }
 
 MainWindowRP::~MainWindowRP()
@@ -132,15 +131,10 @@ void MainWindowRP::messageWrongCredentials()
     msgBox.exec();
 }
 
-void MainWindowRP::incrementProgressBar()
+void MainWindowRP::waitScrutinio(uint numSchede)
 {
-    int value= ui->progressBar_avanzamentoScrutinio->value();
-    ui->progressBar_avanzamentoScrutinio->setValue(value+1);
-}
-
-void MainWindowRP::resizeProgressBar(uint dim)
-{
-    ui->progressBar_avanzamentoScrutinio->setMaximum(dim);
+    ui->label_numeroSchede->setText("Numero schede da scrutinare: " + QString::number(numSchede));
+    ui->stackedWidget->setCurrentIndex(InterfacceRP::scrutinio);
 }
 
 void MainWindowRP::showMessageScrutinioCompletato()
@@ -211,6 +205,7 @@ void MainWindowRP::on_tableWidget_vistaProcedure_cellClicked(int row, int column
                 descProceduraSelezionata = ui->tableWidget_vistaProcedure->item(currentRow,2)->text();
                 cout << "id Procedura selezionata: " << idProceduraSelezionata << ", stato: " << ProceduraVoto::getStatoAsString(statoProceduraSelezionata) << endl;
                 unsigned int numberRows = ui->tableWidget_vistaProcedure->rowCount();
+                emit idProceduraSelected(idProceduraSelezionata);
 
                 //se abbiamo selezionato una riga diversa dalla precedente, deselezioniamo qualsiasi selezione precedente
                 for (unsigned int rowIndex = 0; rowIndex < numberRows; rowIndex++){
@@ -270,7 +265,7 @@ void MainWindowRP::setTables(){
 
 void MainWindowRP::on_pushButton_avviaScrutinio_clicked()
 {
-    emit startScrutinio(idProceduraSelezionata);
+    startScrutinio();
 }
 
 void MainWindowRP::on_pushButton_logout_clicked()
@@ -391,6 +386,11 @@ void MainWindowRP::showSchedaRisultato(uint indexScheda, vector <RisultatiSeggio
             }
         }
     }
+}
+
+void MainWindowRP::startScrutinio()
+{
+    userAgent->start();
 }
 
 

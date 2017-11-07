@@ -53,8 +53,7 @@ public:
             not_authenticated
         };
 
-    void oneMoreVoteScrutinato();
-    void totaleSchede(uint numeroSchede);
+
     string getUserid() const;
     void setUserid(const string &value);
     string deriveKeyFromPass(string password, string salt);
@@ -62,8 +61,12 @@ public:
     string getPublicKeyRP() const;
     void setPublicKeyRP(const string &value);
 
+    uint getIdProceduraSelezionata() const;
+
+
+    void totaleSchede(uint numeroSchede);
 private:
-    void run();
+
     //dati membro
     string ipUrna;
     string userid;
@@ -71,6 +74,7 @@ private:
     string saltScrutinio;
     uint idRP;
     string publicKeyRP;
+    uint idProceduraSelezionata;
 
 
     //funzioni membro
@@ -80,19 +84,21 @@ private:
 
     int verifySignString_RP(string data, string encodedSignature, string encodedPublicKey);
     void parsingScrutinioXML(string &risultatiVotoXML, vector<RisultatiSeggio> *risultatiSeggi);
+    void doScrutinio();
 signals:
     void autenticazione_riuscita(vector <ProceduraVoto>);
     void errorCredenziali();
     void urnaNonRaggiungibile();
-    void oneMore();
-    void schedeDaScrutinare(uint numeroSchede);
+    void scrutinioInCorso();
     void scrutinioOK();
     void erroreScrutinio();
     void readyRisultatiSeggi(vector <RisultatiSeggio> risultatiSeggi);
-
+    void schedeDaScrutinare(uint numeroSchede);
 public slots:
+    void run();
     void doLogin(QString username, QString password);
-    void doScrutinio(uint idProceduraSelezionata);
+    void setIdProceduraSelezionata(const uint &value);
+
     void visualizzaRisultatiVoto(uint idProceduraSelezionata);
 };
 

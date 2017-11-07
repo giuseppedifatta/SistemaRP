@@ -52,17 +52,18 @@ private:
     void setTables();
     void initTableRV();
     void showSchedaRisultato(uint indexScheda, vector<RisultatiSeggio> &risultatiSeggi);
+    void startScrutinio();
 signals:
     void attemptLogin(QString username,QString password);
-    void startScrutinio(uint idProcedura);
+
     void needRisultatiVoto(uint idProcedura);
+    void idProceduraSelected(uint idProceduraSelezionata);
 
 public slots:
     void showProcedureRP(vector <ProceduraVoto> pv);
     void messageUrnaUnreachable();
     void messageWrongCredentials();
-    void incrementProgressBar();
-    void resizeProgressBar(uint dim);
+    void waitScrutinio(uint numSchede);
     void showMessageScrutinioCompletato();
     void errorMessageScrutinio();
     void showRisultatiProcedura(vector<RisultatiSeggio> risultatiSeggi);

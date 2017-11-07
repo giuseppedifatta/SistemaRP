@@ -316,15 +316,7 @@ bool SSLClient::queryScrutinio(uint idProcedura, string derivedKey, string &xmlP
         return false;
 
     }
-    //ciclo for, ad ogni iterazione
-    //ricevo che un'altra scheda è stata scrutinata
-    // segnalo alla view che è stato scrutinato un'altro voto rispetto al totale, così da aggiornare la progress bar
-    //    for(uint i=0; i < numeroSchede; i++){
-    //        string onemore;
-    //        receiveString_SSL(ssl,onemore);
-    //        userAgentChiamante->oneMoreVoteScrutinato();
-    //    }
-    //terminato il ciclo for lo scrutinio è terminato
+
 
     //ricevi esitoScrutinio
     string str;
