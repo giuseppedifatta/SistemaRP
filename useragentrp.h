@@ -92,6 +92,7 @@ signals:
     void scrutinioInCorso();
     void scrutinioOK();
     void erroreScrutinio();
+    void erroreRicezioneRisultati();
     void readyRisultatiSeggi(vector <RisultatiSeggio> risultatiSeggi);
     void schedeDaScrutinare(uint numeroSchede);
 public slots:

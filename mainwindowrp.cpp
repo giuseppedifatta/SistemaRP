@@ -27,6 +27,7 @@ MainWindowRP::MainWindowRP(QWidget *parent) :
     QObject::connect(userAgent,SIGNAL(errorCredenziali()),this,SLOT(messageWrongCredentials()));
     QObject::connect(userAgent,SIGNAL(schedeDaScrutinare(uint)),SLOT(waitScrutinio(uint)));
     QObject::connect(userAgent,SIGNAL(erroreScrutinio()),this,SLOT(errorMessageScrutinio()));
+    QObject::connect(userAgent,SIGNAL(erroreRicezioneRisultati()),this,SLOT(errorMessageRisultati()));
     QObject::connect(userAgent,SIGNAL(scrutinioOK()),this,SLOT(showMessageScrutinioCompletato()));
     QObject::connect(this,SIGNAL(idProceduraSelected(uint)),userAgent,SLOT(setIdProceduraSelezionata(uint)));
 }
@@ -152,6 +153,13 @@ void MainWindowRP::errorMessageScrutinio()
     msgBox.setInformativeText("Errore durante lo scrutinio, l'operazione dovrà essere ripetuta.");
     msgBox.exec();
 }
+void MainWindowRP::errorMessageRisultati(){
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle("Error");
+    msgBox.setInformativeText("Errore nella ricezione dei risultati di voto.");
+    msgBox.exec();
+}
+
 
 void MainWindowRP::showRisultatiProcedura(vector<RisultatiSeggio> risultatiSeggi)
 {

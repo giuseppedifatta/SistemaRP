@@ -59,6 +59,7 @@ signals:
     void needRisultatiVoto(uint idProcedura);
     void idProceduraSelected(uint idProceduraSelezionata);
 
+
 public slots:
     void showProcedureRP(vector <ProceduraVoto> pv);
     void messageUrnaUnreachable();
@@ -68,6 +69,7 @@ public slots:
     void errorMessageScrutinio();
     void showRisultatiProcedura(vector<RisultatiSeggio> risultatiSeggi);
 
+    void errorMessageRisultati();
 private slots:
     void on_pushButton_closeApp_clicked();
     void on_pushButton_doLogin_clicked();

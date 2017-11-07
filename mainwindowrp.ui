@@ -67,45 +67,25 @@ background-color: rgb(49, 149, 255);
       <widget class="QWidget" name="page_login">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <layout class="QGridLayout" name="gridLayout" rowstretch="0,1,0">
-          <item row="2" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="spacing">
-             <number>50</number>
-            </property>
-            <property name="leftMargin">
-             <number>50</number>
-            </property>
-            <property name="rightMargin">
-             <number>50</number>
-            </property>
-            <item>
-             <widget class="QPushButton" name="pushButton_closeApp">
-              <property name="text">
-               <string>Exit</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_doLogin">
-              <property name="text">
-               <string>Accedi</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_titleLogin">
-            <property name="text">
-             <string>LOGIN RESPONSABILE PROCEDIMENTO</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
+         <widget class="QLabel" name="label_titleLogin">
+          <property name="text">
+           <string>LOGIN RESPONSABILE PROCEDIMENTO</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout" rowstretch="0,1,0,0,0">
+          <item row="1" column="0" rowspan="2">
            <layout class="QFormLayout" name="formLayout">
             <property name="formAlignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -123,17 +103,17 @@ background-color: rgb(49, 149, 255);
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_password">
-              <property name="text">
-               <string>Password</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="1">
              <widget class="QLineEdit" name="lineEdit_username">
               <property name="placeholderText">
                <string>Inserire username</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_password">
+              <property name="text">
+               <string>Password</string>
               </property>
              </widget>
             </item>
@@ -146,6 +126,40 @@ background-color: rgb(49, 149, 255);
             </item>
            </layout>
           </item>
+          <item row="4" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="spacing">
+             <number>50</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="pushButton_closeApp">
+              <property name="text">
+               <string>Exit</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_doLogin">
+              <property name="text">
+               <string>Accedi</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0">
+           <widget class="Line" name="line_6">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -153,17 +167,27 @@ background-color: rgb(49, 149, 255);
       <widget class="QWidget" name="page_visualizzaProcedurePersonali">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
+         <widget class="QLabel" name="label_titleProcedure">
+          <property name="text">
+           <string>PROCEDURE</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
          <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0">
           <property name="verticalSpacing">
-           <number>25</number>
+           <number>6</number>
           </property>
-          <item row="1" column="0">
-           <widget class="Line" name="line">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="0">
            <widget class="QTableWidget" name="tableWidget_vistaProcedure">
             <property name="columnCount">
@@ -175,16 +199,6 @@ background-color: rgb(49, 149, 255);
             <column/>
             <column/>
             <column/>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_titleProcedure">
-            <property name="text">
-             <string>PROCEDURE</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
            </widget>
           </item>
           <item row="3" column="0">
@@ -367,31 +381,48 @@ background-color: rgb(49, 149, 255);
       <widget class="QWidget" name="page_risultatiVoto">
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
-         <layout class="QGridLayout" name="gridLayout_4" rowstretch="0,1,0" columnstretch="0,1,1">
-          <item row="2" column="1">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>VISUALIZZAZIONE RISULTATI</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_4" rowstretch="0,1,0,0,0" columnstretch="0,1,1">
+          <property name="horizontalSpacing">
+           <number>50</number>
+          </property>
+          <item row="1" column="1" rowspan="2" colspan="2">
+           <widget class="QTableWidget" name="tableWidget_risultatiVoto"/>
+          </item>
+          <item row="4" column="1">
            <widget class="QPushButton" name="pushButton">
             <property name="text">
              <string>Torna alle Procedure </string>
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
+          <item row="4" column="2">
            <widget class="QPushButton" name="pushButton_schedaSuccessiva">
             <property name="text">
              <string>Scheda Successiva</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QTableWidget" name="tableWidget_risultatiVoto"/>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>VISUALIZZAZIONE RISULTATI</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+          <item row="3" column="1" colspan="2">
+           <widget class="Line" name="line_7">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>

@@ -178,14 +178,14 @@ void UserAgentRP::visualizzaRisultatiVoto(uint idProceduraSelezionata)
 
         }
         else{
-            //emit risultatiNonRicevuti();
+            emit erroreRicezioneRisultati();
         }
-
     }
     else{
         cerr << "collegamento con l'urna non riuscito" << endl;
         emit urnaNonRaggiungibile();
     }
+    delete rp_client;
 }
 
 void UserAgentRP::parsingScrutinioXML(string &risultatiVotoXML, vector <RisultatiSeggio> *risultatiSeggi)
